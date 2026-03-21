@@ -30,7 +30,7 @@ try
     builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseSqlServer(
             builder.Configuration.GetConnectionString("DefaultConnection"),
-            sql => sql.MigrationsAssembly(typeof(Program).Assembly.GetName().Name)));
+            sql => sql.MigrationsAssembly(typeof(AppDbContext).Assembly.GetName().Name!)));
 
     var mongoLogsCs = builder.Configuration.GetConnectionString("MongoLogs");
     var healthChecks = builder.Services.AddHealthChecks()
