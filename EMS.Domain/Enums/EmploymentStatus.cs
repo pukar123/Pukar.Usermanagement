@@ -1,4 +1,4 @@
-namespace EMS.Domain.DbModels;
+namespace EMS.Domain.Enums;
 
 public enum EmploymentStatus
 {

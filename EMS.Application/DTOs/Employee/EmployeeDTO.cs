@@ -1,8 +1,8 @@
 using EMS.Domain.Enums;
 
-namespace EMS.Domain.DbModels;
+namespace EMS.Application.DTOs.Employee;
 
-public class Employee
+public class EmployeeDTO
 {
     public int Id { get; set; }
     public int OrganizationId { get; set; }
@@ -18,15 +18,8 @@ public class Employee
     public string? JobTitle { get; set; }
     public DateTime DateOfBirth { get; set; }
     public DateTime DateJoined { get; set; }
-    public EmploymentStatus EmploymentStatus { get; set; } = EmploymentStatus.Active;
-    public bool IsActive { get; set; } = true;
-    public string? ExternalIdentityKey { get; set; }
+    public EmploymentStatus EmploymentStatus { get; set; }
+    public bool IsActive { get; set; }
     public DateTime CreatedAtUtc { get; set; }
     public DateTime UpdatedAtUtc { get; set; }
-
-    public Organization Organization { get; set; } = null!;
-    public Department? Department { get; set; }
-    public Location? Location { get; set; }
-    public Employee? Manager { get; set; }
-    public ICollection<Employee> DirectReports { get; set; } = new List<Employee>();
 }

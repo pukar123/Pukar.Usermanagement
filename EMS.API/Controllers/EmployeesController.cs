@@ -1,0 +1,60 @@
+using EMS.Application.DTOs.Employee;
+using EMS.Application.Services.Employees;
+using Microsoft.AspNetCore.Mvc;
+
+namespace EMS.API.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class EmployeesController : ControllerBase
+{
+    private readonly IEmployeeService _employeeService;
+
+    public EmployeesController(IEmployeeService employeeService)
+    {
+        _employeeService = employeeService;
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IReadOnlyList<EmployeeResponseModel>>> GetAll(
+        CancellationToken cancellationToken)
+    {
+        var items = await _employeeService.GetAllAsync(cancellationToken);
+        return Ok(items);
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<EmployeeResponseModel>> GetById(
+        int id,
+        CancellationToken cancellationToken)
+    {
+        var item = await _employeeService.GetByIdAsync(id, cancellationToken);
+        return item is null ? NotFound() : Ok(item);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<EmployeeResponseModel>> Create(
+        [FromBody] CreateEmployeeRequestModel request,
+        CancellationToken cancellationToken)
+    {
+        var created = await _employeeService.CreateAsync(request, cancellationToken);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<EmployeeResponseModel>> Update(
+        int id,
+        [FromBody] UpdateEmployeeRequestModel request,
+        CancellationToken cancellationToken)
+    {
+        var updated = await _employeeService.UpdateAsync(id, request, cancellationToken);
+        return updated is null ? NotFound() : Ok(updated);
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+    {
+        var deleted = await _employeeService.DeleteAsync(id, cancellationToken);
+        return deleted ? NoContent() : NotFound();
+    }
+}
