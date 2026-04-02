@@ -5,16 +5,6 @@ namespace EMS.Application.Mapping;
 
 internal static class OrganizationMapper
 {
-    public static Organization ToEntity(CreateOrganizationRequestModel request)
-    {
-        return new Organization
-        {
-            Name = request.Name,
-            Code = request.Code,
-            IsActive = request.IsActive
-        };
-    }
-
     public static void ApplyUpdate(Organization entity, UpdateOrganizationRequestModel request)
     {
         entity.Name = request.Name;

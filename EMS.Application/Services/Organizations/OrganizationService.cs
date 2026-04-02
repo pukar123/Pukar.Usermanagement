@@ -1,7 +1,9 @@
 using EMS.Application.DTOs.Organization;
+using EMS.Application.Exceptions;
 using EMS.Application.Mapping;
 using EMS.Domain.DbModels;
 using EMS.Domain.Repositories.Interface;
+using Microsoft.EntityFrameworkCore;
 
 namespace EMS.Application.Services.Organizations;
 
@@ -14,12 +16,33 @@ public sealed class OrganizationService : IOrganizationService
         _repository = repository;
     }
 
-    public async Task<OrganizationResponseModel> CreateAsync(CreateOrganizationRequestModel request, CancellationToken cancellationToken = default)
+    public async Task<OrganizationDTO> CreateAsync(OrganizationDTO dto, CancellationToken cancellationToken = default)
     {
-        var entity = OrganizationMapper.ToEntity(request);
-        await _repository.AddAsync(entity);
-        await _repository.SaveChangesAsync();
-        return OrganizationMapper.ToResponse(entity);
+        await using var transaction = await _repository.BeginTransactionAsync();
+        try
+        {
+            if (await NameAlreadyExistsAsync(dto.Name, cancellationToken))
+                throw new BusinessRuleException("An organization with this name already exists.");
+
+            if (!string.IsNullOrWhiteSpace(dto.Code) &&
+                await CodeAlreadyExistsAsync(dto.Code, cancellationToken))
+                throw new BusinessRuleException("An organization with this code already exists.");
+
+            var entity = new Organization();
+            MapDtoToEntity(dto, entity);
+
+            await _repository.AddAsync(entity);
+            await _repository.SaveChangesAsync();
+
+            await transaction.CommitAsync();
+            dto.Id = entity.Id;
+            return dto;
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
     }
 
     public async Task<OrganizationResponseModel?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
@@ -55,5 +78,24 @@ public sealed class OrganizationService : IOrganizationService
         _repository.Remove(entity);
         await _repository.SaveChangesAsync();
         return true;
+    }
+
+    private async Task<bool> NameAlreadyExistsAsync(string name, CancellationToken cancellationToken)
+    {
+        return await _repository.GetQueryable()
+            .AnyAsync(o => o.Name == name, cancellationToken);
+    }
+
+    private async Task<bool> CodeAlreadyExistsAsync(string code, CancellationToken cancellationToken)
+    {
+        return await _repository.GetQueryable()
+            .AnyAsync(o => o.Code == code, cancellationToken);
+    }
+
+    private static void MapDtoToEntity(OrganizationDTO dto, Organization entity)
+    {
+        entity.Name = dto.Name;
+        entity.Code = dto.Code;
+        entity.IsActive = dto.IsActive;
     }
 }

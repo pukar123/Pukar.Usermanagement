@@ -1,6 +1,6 @@
-namespace EMS.Application.DTOs.Organization;
+namespace EMS.API.Models.Organization;
 
-public class CreateOrganizationRequestModel
+public class CreateOrganizationRequest
 {
     public string Name { get; set; } = string.Empty;
     public string? Code { get; set; }
