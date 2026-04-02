@@ -1,4 +1,7 @@
+using AutoMapper;
+using EMS.API.Models.Department;
 using EMS.Application.DTOs.Department;
+using EMS.Application.Exceptions;
 using EMS.Application.Services.Departments;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +12,12 @@ namespace EMS.API.Controllers;
 public class DepartmentsController : ControllerBase
 {
     private readonly IDepartmentService _departmentService;
+    private readonly IMapper _mapper;
 
-    public DepartmentsController(IDepartmentService departmentService)
+    public DepartmentsController(IDepartmentService departmentService, IMapper mapper)
     {
         _departmentService = departmentService;
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -30,12 +35,20 @@ public class DepartmentsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<DepartmentResponseModel>> Create(
-        [FromBody] CreateDepartmentRequestModel request,
+    public async Task<ActionResult<DepartmentResponse>> Create(
+        [FromBody] CreateDepartmentRequest request,
         CancellationToken cancellationToken)
     {
-        var created = await _departmentService.CreateAsync(request, cancellationToken);
-        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+        try
+        {
+            var dto = _mapper.Map<DepartmentDTO>(request);
+            var created = await _departmentService.CreateAsync(dto, cancellationToken);
+            return CreatedAtAction(nameof(GetById), new { id = created.Id }, _mapper.Map<DepartmentResponse>(created));
+        }
+        catch (BusinessRuleException ex)
+        {
+            return Conflict(ex.Message);
+        }
     }
 
     [HttpPut("{id:int}")]

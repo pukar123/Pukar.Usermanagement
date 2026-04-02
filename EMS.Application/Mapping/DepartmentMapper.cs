@@ -5,18 +5,6 @@ namespace EMS.Application.Mapping;
 
 internal static class DepartmentMapper
 {
-    public static Department ToEntity(CreateDepartmentRequestModel request)
-    {
-        return new Department
-        {
-            OrganizationId = request.OrganizationId,
-            Name = request.Name,
-            Code = request.Code,
-            ParentDepartmentId = request.ParentDepartmentId,
-            IsActive = request.IsActive
-        };
-    }
-
     public static void ApplyUpdate(Department entity, UpdateDepartmentRequestModel request)
     {
         entity.Name = request.Name;

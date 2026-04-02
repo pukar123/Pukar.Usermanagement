@@ -1,6 +1,6 @@
-namespace EMS.Application.DTOs.Department;
+namespace EMS.API.Models.Department;
 
-public class CreateDepartmentRequestModel
+public class CreateDepartmentRequest
 {
     public int OrganizationId { get; set; }
     public string Name { get; set; } = string.Empty;
