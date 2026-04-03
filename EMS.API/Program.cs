@@ -2,8 +2,10 @@ using System.Reflection;
 using EMS.API.Middleware;
 using EMS.Application.Services.Departments;
 using EMS.Application.Services.Employees;
+using EMS.Application.Services.Jobs;
 using EMS.Application.Services.Locations;
 using EMS.Application.Services.Organizations;
+using EMS.Application.Services.Roles;
 using EMS.Domain.Database;
 using EMS.Domain.Repositories.Interface;
 using EMS.Infrastructure.Repositories.Implementations;
@@ -40,6 +42,8 @@ try
     builder.Services.AddScoped<IOrganizationService, OrganizationService>();
     builder.Services.AddScoped<IDepartmentService, DepartmentService>();
     builder.Services.AddScoped<ILocationService, LocationService>();
+    builder.Services.AddScoped<IRoleService, RoleService>();
+    builder.Services.AddScoped<IJobService, JobService>();
 
     builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseSqlServer(

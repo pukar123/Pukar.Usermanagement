@@ -1,4 +1,5 @@
 using EMS.Application.DTOs.Employee;
+using EMS.Application.Exceptions;
 using EMS.Application.Services.Employees;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,8 +38,15 @@ public class EmployeesController : ControllerBase
         [FromBody] CreateEmployeeRequestModel request,
         CancellationToken cancellationToken)
     {
-        var created = await _employeeService.CreateAsync(request, cancellationToken);
-        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+        try
+        {
+            var created = await _employeeService.CreateAsync(request, cancellationToken);
+            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+        }
+        catch (BusinessRuleException ex)
+        {
+            return Conflict(ex.Message);
+        }
     }
 
     [HttpPut("{id:int}")]
@@ -47,8 +55,15 @@ public class EmployeesController : ControllerBase
         [FromBody] UpdateEmployeeRequestModel request,
         CancellationToken cancellationToken)
     {
-        var updated = await _employeeService.UpdateAsync(id, request, cancellationToken);
-        return updated is null ? NotFound() : Ok(updated);
+        try
+        {
+            var updated = await _employeeService.UpdateAsync(id, request, cancellationToken);
+            return updated is null ? NotFound() : Ok(updated);
+        }
+        catch (BusinessRuleException ex)
+        {
+            return Conflict(ex.Message);
+        }
     }
 
     [HttpDelete("{id:int}")]

@@ -29,7 +29,6 @@ public sealed class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
             .HasMaxLength(256);
 
         builder.Property(x => x.PhoneNumber).HasMaxLength(32);
-        builder.Property(x => x.JobTitle).HasMaxLength(128);
         builder.Property(x => x.ExternalIdentityKey).HasMaxLength(450);
 
         builder.Property(x => x.EmploymentStatus)
@@ -56,6 +55,11 @@ public sealed class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
             .HasForeignKey(x => x.LocationId)
             .OnDelete(DeleteBehavior.SetNull);
 
+        builder.HasOne(x => x.Job)
+            .WithMany(x => x.Employees)
+            .HasForeignKey(x => x.JobId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasOne(x => x.Manager)
             .WithMany(x => x.DirectReports)
             .HasForeignKey(x => x.ManagerId)
@@ -66,5 +70,6 @@ public sealed class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
         builder.HasIndex(x => x.DepartmentId);
         builder.HasIndex(x => x.LocationId);
         builder.HasIndex(x => x.ManagerId);
+        builder.HasIndex(x => x.JobId);
     }
 }
