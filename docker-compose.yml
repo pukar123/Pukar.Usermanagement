@@ -1,6 +1,11 @@
-# EMS local dev: SQL Server, MongoDB, Redis, Mongo Express UI
-# Run: docker compose up -d
-# API on host uses localhost ports (see appsettings.json ConnectionStrings).
+# EMS local dev: SQL Server, MongoDB, Redis, Mongo Express UI, Next.js (ems-web)
+# Run: docker compose up -d --build   OR use start-ems-docker.bat
+#
+# EMS.API runs on the host (dotnet run) and uses localhost:1433 for SQL — same ports as below.
+# Browser loads the web app at http://localhost:3000 and calls the API at NEXT_PUBLIC_API_BASE_URL
+# (default http://localhost:5246). Run API with: dotnet run --project EMS.API --launch-profile http
+#
+# Optional: copy docker-compose.env.example to .env to override NEXT_PUBLIC_* for the web image build.
 
 services:
   sqlserver:
@@ -58,6 +63,20 @@ services:
       ME_CONFIG_BASICAUTH: "false"
     depends_on:
       - mongodb
+    networks:
+      - ems-network
+
+  ems-web:
+    build:
+      context: ./ems-web
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:5246}
+        NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID: ${NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID:-1}
+    container_name: ems-web-dev
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
     networks:
       - ems-network
 

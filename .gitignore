@@ -134,3 +134,6 @@ $RECYCLE.BIN/
 # VS Code
 .vscode/
 
+# Docker Compose local overrides (may contain URLs / build args)
+.env
+

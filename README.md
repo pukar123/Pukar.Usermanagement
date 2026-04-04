@@ -16,8 +16,17 @@ Backend API for employee and organization directory data. The solution uses a la
 | `EMS.Application` | DTOs grouped by area under `DTOs/{Employee,Organization,Department,Location,JobPosition}/`, application services, entity ↔ DTO mapping |
 | `EMS.Infrastructure` | `BaseRepository<T>` and other infrastructure implementations |
 | `EMS.API` | ASP.NET Core host, controllers, DI wiring, Serilog, health checks |
+| `ems-web` | Next.js (App Router) frontend — [quick start](ems-web/README.md), [full frontend guide](ems-web/docs/FRONTEND.md) |
 
 More detail: [docs/architecture.md](docs/architecture.md).
+
+## Docker Compose (SQL Server, MongoDB, Redis, Mongo Express, Next.js)
+
+- **[docker-compose.yml](docker-compose.yml)** — infrastructure plus **`ems-web`** (production Next.js image on port **3000**).
+- **[docker-compose.env.example](docker-compose.env.example)** — optional copy to **`.env`** beside `docker-compose.yml` to override `NEXT_PUBLIC_*` build args for the web image.
+- **Batch (Windows):** double-click **[start-ems-docker.bat](start-ems-docker.bat)** to build and start containers; **[stop-ems-docker.bat](stop-ems-docker.bat)** runs `docker compose down` (containers removed; volumes kept).
+
+**Typical flow:** start Docker Desktop → run `start-ems-docker.bat` → start **EMS.API** on the host (`dotnet run --project EMS.API --launch-profile http`) so the browser can reach the API at `http://localhost:5246` while the UI is at `http://localhost:3000`. Ensure [CORS](EMS.API/Program.cs) allows your web origin.
 
 ## Configuration
 

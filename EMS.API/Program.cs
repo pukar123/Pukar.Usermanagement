@@ -32,6 +32,17 @@ try
         }
     });
 
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("EmsWeb", policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:3000", "https://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+    });
+
     builder.Services.AddControllers();
     builder.Services.AddOpenApi();
     builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
@@ -83,6 +94,8 @@ try
     });
 
     app.UseHttpsRedirection();
+
+    app.UseCors("EmsWeb");
 
     app.UseAuthorization();
 
