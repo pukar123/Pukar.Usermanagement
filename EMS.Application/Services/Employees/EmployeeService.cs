@@ -4,24 +4,24 @@ using EMS.Application.Mapping;
 using EMS.Domain.DbModels;
 using EMS.Domain.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
-using JobEntity = EMS.Domain.DbModels.Job;
+using JobPositionEntity = EMS.Domain.DbModels.JobPosition;
 
 namespace EMS.Application.Services.Employees;
 
 public sealed class EmployeeService : IEmployeeService
 {
     private readonly IBaseRepository<Employee> _repository;
-    private readonly IBaseRepository<JobEntity> _jobRepository;
+    private readonly IBaseRepository<JobPositionEntity> _jobPositionRepository;
 
-    public EmployeeService(IBaseRepository<Employee> repository, IBaseRepository<JobEntity> jobRepository)
+    public EmployeeService(IBaseRepository<Employee> repository, IBaseRepository<JobPositionEntity> jobPositionRepository)
     {
         _repository = repository;
-        _jobRepository = jobRepository;
+        _jobPositionRepository = jobPositionRepository;
     }
 
     public async Task<EmployeeResponseModel> CreateAsync(CreateEmployeeRequestModel request, CancellationToken cancellationToken = default)
     {
-        await EnsureJobMatchesOrganizationAsync(request.OrganizationId, request.JobId, cancellationToken);
+        await EnsureJobPositionMatchesOrganizationAsync(request.OrganizationId, request.JobPositionId, cancellationToken);
 
         var now = DateTime.UtcNow;
         var entity = EmployeeMapper.ToEntity(request);
@@ -52,7 +52,7 @@ public sealed class EmployeeService : IEmployeeService
         if (entity is null)
             return null;
 
-        await EnsureJobMatchesOrganizationAsync(request.OrganizationId, request.JobId, cancellationToken);
+        await EnsureJobPositionMatchesOrganizationAsync(request.OrganizationId, request.JobPositionId, cancellationToken);
 
         EmployeeMapper.ApplyUpdate(entity, request);
         entity.UpdatedAtUtc = DateTime.UtcNow;
@@ -74,19 +74,18 @@ public sealed class EmployeeService : IEmployeeService
         return true;
     }
 
-    private async Task EnsureJobMatchesOrganizationAsync(int organizationId, int? jobId, CancellationToken cancellationToken)
+    private async Task EnsureJobPositionMatchesOrganizationAsync(int organizationId, int? jobPositionId, CancellationToken cancellationToken)
     {
-        if (jobId is null)
+        if (jobPositionId is null)
             return;
 
-        var job = await _jobRepository.GetQueryable()
-            .Include(j => j.Role)
-            .FirstOrDefaultAsync(j => j.Id == jobId.Value, cancellationToken);
+        var jobPosition = await _jobPositionRepository.GetQueryable()
+            .FirstOrDefaultAsync(j => j.Id == jobPositionId.Value, cancellationToken);
 
-        if (job is null)
-            throw new BusinessRuleException("Job was not found.");
+        if (jobPosition is null)
+            throw new BusinessRuleException("Job position was not found.");
 
-        if (job.Role.OrganizationId != organizationId)
-            throw new BusinessRuleException("Job must belong to the same organization as the employee.");
+        if (jobPosition.OrganizationId != organizationId)
+            throw new BusinessRuleException("Job position must belong to the same organization as the employee.");
     }
 }

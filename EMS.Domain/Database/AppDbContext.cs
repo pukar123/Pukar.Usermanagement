@@ -12,8 +12,7 @@ namespace EMS.Domain.Database
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<DbModels.Employee> Employees { get; set; }
-        public DbSet<DbModels.Role> Roles { get; set; }
-        public DbSet<DbModels.Job> Jobs { get; set; }
+        public DbSet<DbModels.JobPosition> JobPositions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

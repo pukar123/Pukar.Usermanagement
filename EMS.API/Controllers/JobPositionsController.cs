@@ -1,45 +1,45 @@
-using EMS.Application.DTOs.Role;
+using EMS.Application.DTOs.JobPosition;
 using EMS.Application.Exceptions;
-using EMS.Application.Services.Roles;
+using EMS.Application.Services.JobPositions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EMS.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class RolesController : ControllerBase
+public class JobPositionsController : ControllerBase
 {
-    private readonly IRoleService _roleService;
+    private readonly IJobPositionService _jobPositionService;
 
-    public RolesController(IRoleService roleService)
+    public JobPositionsController(IJobPositionService jobPositionService)
     {
-        _roleService = roleService;
+        _jobPositionService = jobPositionService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<RoleResponseModel>>> GetByOrganization(
+    public async Task<ActionResult<IReadOnlyList<JobPositionResponseModel>>> GetByOrganization(
         [FromQuery] int organizationId,
         CancellationToken cancellationToken)
     {
-        var items = await _roleService.GetByOrganizationAsync(organizationId, cancellationToken);
+        var items = await _jobPositionService.GetByOrganizationAsync(organizationId, cancellationToken);
         return Ok(items);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<RoleResponseModel>> GetById(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult<JobPositionResponseModel>> GetById(int id, CancellationToken cancellationToken)
     {
-        var item = await _roleService.GetByIdAsync(id, cancellationToken);
+        var item = await _jobPositionService.GetByIdAsync(id, cancellationToken);
         return item is null ? NotFound() : Ok(item);
     }
 
     [HttpPost]
-    public async Task<ActionResult<RoleResponseModel>> Create(
-        [FromBody] CreateRoleRequestModel request,
+    public async Task<ActionResult<JobPositionResponseModel>> Create(
+        [FromBody] CreateJobPositionRequestModel request,
         CancellationToken cancellationToken)
     {
         try
         {
-            var created = await _roleService.CreateAsync(request, cancellationToken);
+            var created = await _jobPositionService.CreateAsync(request, cancellationToken);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
         catch (BusinessRuleException ex)
@@ -49,14 +49,14 @@ public class RolesController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult<RoleResponseModel>> Update(
+    public async Task<ActionResult<JobPositionResponseModel>> Update(
         int id,
-        [FromBody] UpdateRoleRequestModel request,
+        [FromBody] UpdateJobPositionRequestModel request,
         CancellationToken cancellationToken)
     {
         try
         {
-            var updated = await _roleService.UpdateAsync(id, request, cancellationToken);
+            var updated = await _jobPositionService.UpdateAsync(id, request, cancellationToken);
             return updated is null ? NotFound() : Ok(updated);
         }
         catch (BusinessRuleException ex)
@@ -70,7 +70,7 @@ public class RolesController : ControllerBase
     {
         try
         {
-            var deleted = await _roleService.DeleteAsync(id, cancellationToken);
+            var deleted = await _jobPositionService.DeleteAsync(id, cancellationToken);
             return deleted ? NoContent() : NotFound();
         }
         catch (BusinessRuleException ex)

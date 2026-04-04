@@ -13,7 +13,7 @@ Backend API for employee and organization directory data. The solution uses a la
 | Project | Role |
 |---------|------|
 | `EMS.Domain` | EF Core `AppDbContext`, entity configurations, migrations, repository interfaces |
-| `EMS.Application` | DTOs grouped by area under `DTOs/{Employee,Organization,Department,Location}/`, application services, entity ↔ DTO mapping |
+| `EMS.Application` | DTOs grouped by area under `DTOs/{Employee,Organization,Department,Location,JobPosition}/`, application services, entity ↔ DTO mapping |
 | `EMS.Infrastructure` | `BaseRepository<T>` and other infrastructure implementations |
 | `EMS.API` | ASP.NET Core host, controllers, DI wiring, Serilog, health checks |
 
@@ -82,13 +82,24 @@ REST-style CRUD under `api/{resource}`:
 | Organizations | `GET/POST /api/Organizations`, `GET/PUT/DELETE /api/Organizations/{id}` |
 | Departments | `GET/POST /api/Departments`, `GET/PUT/DELETE /api/Departments/{id}` |
 | Locations | `GET/POST /api/Locations`, `GET/PUT/DELETE /api/Locations/{id}` |
+| Job positions | `GET /api/JobPositions?organizationId={id}`, `GET/POST/PUT/DELETE /api/JobPositions/{id}` |
+
+**Employees** may reference an optional **`jobPositionId`** (nullable) pointing at a row in **`org.JobPositions`**. Job positions are scoped per organization (`organizationId` on create; title and optional code are unique within the org). This replaces an older two-level Role/Job model so the name **JobPosition** stays distinct from application **user roles** (e.g. identity/authorization).
 
 **Health:** `GET /health` (includes database; MongoDB when `MongoLogs` is configured).
 
 ## Building
 
+From the repository root (same folder as `EmployeeManagementSystem.sln`):
+
 ```bash
 dotnet build EmployeeManagementSystem.sln
+```
+
+Release configuration:
+
+```bash
+dotnet build EmployeeManagementSystem.sln -c Release
 ```
 
 ## Tests

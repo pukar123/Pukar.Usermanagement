@@ -55,9 +55,9 @@ public sealed class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
             .HasForeignKey(x => x.LocationId)
             .OnDelete(DeleteBehavior.SetNull);
 
-        builder.HasOne(x => x.Job)
+        builder.HasOne(x => x.JobPosition)
             .WithMany(x => x.Employees)
-            .HasForeignKey(x => x.JobId)
+            .HasForeignKey(x => x.JobPositionId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(x => x.Manager)
@@ -70,6 +70,6 @@ public sealed class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
         builder.HasIndex(x => x.DepartmentId);
         builder.HasIndex(x => x.LocationId);
         builder.HasIndex(x => x.ManagerId);
-        builder.HasIndex(x => x.JobId);
+        builder.HasIndex(x => x.JobPositionId);
     }
 }
