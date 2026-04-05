@@ -1,5 +1,5 @@
 using EMS.Application.DTOs.JobPosition;
-using EMS.Application.Exceptions;
+using EMS.Domain.Helpers;
 using EMS.Application.Services.JobPositions;
 using Microsoft.AspNetCore.Mvc;
 

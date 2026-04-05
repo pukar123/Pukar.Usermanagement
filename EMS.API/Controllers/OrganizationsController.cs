@@ -1,7 +1,7 @@
 using AutoMapper;
 using EMS.API.Models.Organization;
 using EMS.Application.DTOs.Organization;
-using EMS.Application.Exceptions;
+using EMS.Domain.Helpers;
 using EMS.Application.Services.Organizations;
 using Microsoft.AspNetCore.Mvc;
 

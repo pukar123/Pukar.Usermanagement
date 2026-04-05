@@ -1,5 +1,5 @@
 using EMS.Application.DTOs.Organization;
-using EMS.Application.Exceptions;
+using EMS.Domain.Helpers;
 using EMS.Application.Mapping;
 using EMS.Domain.DbModels;
 using EMS.Domain.Repositories.Interface;

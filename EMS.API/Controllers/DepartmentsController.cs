@@ -1,7 +1,7 @@
 using AutoMapper;
 using EMS.API.Models.Department;
 using EMS.Application.DTOs.Department;
-using EMS.Application.Exceptions;
+using EMS.Domain.Helpers;
 using EMS.Application.Services.Departments;
 using Microsoft.AspNetCore.Mvc;
 
