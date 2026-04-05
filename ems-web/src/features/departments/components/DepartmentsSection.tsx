@@ -6,7 +6,7 @@ import { Button } from "@/shared/components/Button";
 import { Modal } from "@/shared/components/Modal";
 import { Spinner } from "@/shared/components/Spinner";
 import { getErrorMessage } from "@/shared/api/http-client";
-import { defaultOrganizationId } from "@/shared/config/public-env";
+import { useOrganizationContext } from "@/providers/OrganizationProvider";
 import { cn } from "@/shared/utils/cn";
 import {
   useCreateDepartment,
@@ -20,6 +20,7 @@ const inputClass =
   "mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100";
 
 export function DepartmentsSection() {
+  const { organizationId: currentOrgId } = useOrganizationContext();
   const { data, isLoading, isError, error } = useDepartments();
   const createMut = useCreateDepartment();
   const updateMut = useUpdateDepartment();
@@ -29,7 +30,6 @@ export function DepartmentsSection() {
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Department | null>(null);
 
-  const [organizationId, setOrganizationId] = useState(String(defaultOrganizationId));
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
   const [parentDepartmentId, setParentDepartmentId] = useState("");
@@ -47,7 +47,6 @@ export function DepartmentsSection() {
 
   const openCreate = () => {
     setEditing(null);
-    setOrganizationId(String(defaultOrganizationId));
     setName("");
     setCode("");
     setParentDepartmentId("");
@@ -57,7 +56,6 @@ export function DepartmentsSection() {
 
   const openEdit = (d: Department) => {
     setEditing(d);
-    setOrganizationId(String(d.organizationId));
     setName(d.name);
     setCode(d.code ?? "");
     setParentDepartmentId(d.parentDepartmentId != null ? String(d.parentDepartmentId) : "");
@@ -79,9 +77,8 @@ export function DepartmentsSection() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const org = Number(organizationId);
-    if (!Number.isFinite(org) || org < 1) {
-      toast.error("Enter a valid organization id.");
+    if (currentOrgId == null) {
+      toast.error("Organization is not loaded.");
       return;
     }
     if (!name.trim()) {
@@ -103,7 +100,7 @@ export function DepartmentsSection() {
         toast.success("Department updated.");
       } else {
         await createMut.mutateAsync({
-          organizationId: org,
+          organizationId: currentOrgId,
           name: name.trim(),
           code: code.trim() ? code.trim() : null,
           parentDepartmentId: parseOptionalInt(parentDepartmentId),
@@ -128,6 +125,14 @@ export function DepartmentsSection() {
   };
 
   const busy = createMut.isPending || updateMut.isPending;
+
+  if (currentOrgId == null) {
+    return (
+      <div className="flex justify-center py-16">
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -173,7 +178,6 @@ export function DepartmentsSection() {
             <thead className="bg-zinc-50 dark:bg-zinc-900/50">
               <tr>
                 <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Id</th>
-                <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Org</th>
                 <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Name</th>
                 <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Code</th>
                 <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Parent</th>
@@ -186,9 +190,6 @@ export function DepartmentsSection() {
                 <tr key={row.id} className="bg-white hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-zinc-900">
                   <td className="whitespace-nowrap px-4 py-3 font-mono text-zinc-600 dark:text-zinc-400">
                     {row.id}
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-3 font-mono text-zinc-600 dark:text-zinc-400">
-                    {row.organizationId}
                   </td>
                   <td className="px-4 py-3 text-zinc-900 dark:text-zinc-100">{row.name}</td>
                   <td className="px-4 py-3 text-zinc-700 dark:text-zinc-300">{row.code ?? "—"}</td>
@@ -240,21 +241,6 @@ export function DepartmentsSection() {
         className="max-w-lg"
       >
         <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
-          {!editing ? (
-            <div>
-              <label className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-                Organization id
-              </label>
-              <input
-                type="number"
-                min={1}
-                value={organizationId}
-                onChange={(e) => setOrganizationId(e.target.value)}
-                className={inputClass}
-                required
-              />
-            </div>
-          ) : null}
           <div>
             <label className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Name</label>
             <input

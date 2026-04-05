@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AppNav } from "@/shared/components/AppNav";
+import { OrganizationGate } from "@/providers/OrganizationGate";
+import { OrganizationProvider } from "@/providers/OrganizationProvider";
 import { ReactQueryProvider } from "@/providers/ReactQueryProvider";
 import "./globals.css";
 
@@ -31,8 +33,12 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col">
         <ReactQueryProvider>
-          <AppNav />
-          {children}
+          <OrganizationProvider>
+            <OrganizationGate>
+              <AppNav />
+              {children}
+            </OrganizationGate>
+          </OrganizationProvider>
         </ReactQueryProvider>
       </body>
     </html>

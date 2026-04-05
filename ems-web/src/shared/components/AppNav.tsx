@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useOrganizationContext } from "@/providers/OrganizationProvider";
 import { cn } from "@/shared/utils/cn";
 
-const links = [
+const mainLinks = [
   { href: "/", label: "Home" },
   { href: "/employees", label: "Employees" },
   { href: "/departments", label: "Departments" },
@@ -18,6 +19,17 @@ function isActive(pathname: string, href: string): boolean {
 
 export function AppNav() {
   const pathname = usePathname();
+  const { needsSetup, currentOrganization } = useOrganizationContext();
+
+  if (needsSetup) {
+    return (
+      <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="mx-auto flex max-w-6xl items-center px-4 py-3 sm:px-6">
+          <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">EMS — Organization setup</span>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
@@ -25,7 +37,12 @@ export function AppNav() {
         className="mx-auto flex max-w-6xl flex-wrap items-center gap-1 px-4 py-3 sm:gap-2 sm:px-6"
         aria-label="Main"
       >
-        {links.map(({ href, label }) => {
+        {currentOrganization ? (
+          <span className="mr-2 hidden text-xs text-zinc-500 dark:text-zinc-400 sm:inline-block">
+            {currentOrganization.name}
+          </span>
+        ) : null}
+        {mainLinks.map(({ href, label }) => {
           const active = isActive(pathname, href);
           return (
             <Link

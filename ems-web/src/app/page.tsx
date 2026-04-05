@@ -14,8 +14,8 @@ export default function Home() {
           Employee Management System
         </h1>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-          Next.js frontend for EMS.API. Set <code className="rounded bg-zinc-100 px-1 dark:bg-zinc-800">NEXT_PUBLIC_API_BASE_URL</code>{" "}
-          and <code className="rounded bg-zinc-100 px-1 dark:bg-zinc-800">NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID</code>; enable CORS on the API.
+          Next.js frontend for EMS.API.           Set <code className="rounded bg-zinc-100 px-1 dark:bg-zinc-800">NEXT_PUBLIC_API_BASE_URL</code> in{" "}
+          <code className="rounded bg-zinc-100 px-1 dark:bg-zinc-800">.env.local</code> and complete organization setup on first run; enable CORS on the API.
         </p>
       </div>
       <ul className="grid gap-4 sm:grid-cols-3">

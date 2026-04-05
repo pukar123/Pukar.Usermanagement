@@ -8,7 +8,7 @@ Browser client for **EMS.API**: feature-based folders, **React Query**, **Zustan
 
 ## Quick start
 
-**Prerequisites:** Node.js **20.9+**, EMS.API running with CORS for `http://localhost:3000`.
+**Prerequisites:** Node.js **20.9+**, [.NET 9 SDK](https://dotnet.microsoft.com/download) if you use the combined scripts below, and CORS on EMS.API for `http://localhost:3000`.
 
 ```bash
 cd ems-web
@@ -20,14 +20,27 @@ Edit `.env.local`:
 
 | Variable | Purpose |
 |----------|---------|
-| `NEXT_PUBLIC_API_BASE_URL` | API origin, no trailing slash (e.g. `http://localhost:5246`) |
-| `NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID` | Default org when creating employees |
+| `NEXT_PUBLIC_API_BASE_URL` | API origin, no trailing slash. Use `http://localhost:5246` when the API runs with the **`http`** launch profile; use `https://localhost:7056` when using **`https`**. |
+
+**First run:** if the database has no organization yet, the app opens **`/setup`** so you can create the single organization for this instance. After that, the app uses that organization for employees, departments, and positions (no manual organization id in forms).
+
+**Option A — API and web together (one terminal):**
+
+```bash
+npm run dev:all
+```
+
+This starts EMS.API (`http` profile, typically `http://localhost:5246`) and `next dev` (usually `http://localhost:3000`). Match `NEXT_PUBLIC_API_BASE_URL` to the API URL.
+
+**Option B — Next.js only (API already running elsewhere):**
 
 ```bash
 npm run dev
 ```
 
-Open **http://localhost:3000** → **Open employees**.
+**HTTPS API profile:** use `npm run dev:https` and set `NEXT_PUBLIC_API_BASE_URL=https://localhost:7056` (see `EMS.API/Properties/launchSettings.json`).
+
+Open **http://localhost:3000** and use the nav (Employees, Departments, Positions, etc.).
 
 ---
 
@@ -35,7 +48,10 @@ Open **http://localhost:3000** → **Open employees**.
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Development server (Turbopack) |
+| `npm run dev:all` | Runs **EMS.API** (`dotnet run`, `http` launch profile) and **`next dev`** together via `concurrently` |
+| `npm run dev:https` | Same as `dev:all` but API uses the **`https`** launch profile |
+| `npm run dev:api` | **EMS.API** only (`http` profile) |
+| `npm run dev` | Next.js dev server only (Turbopack) |
 | `npm run build` | Production build |
 | `npm run start` | Serve production build |
 | `npm run lint` | ESLint |

@@ -21,6 +21,9 @@ public sealed class OrganizationService : IOrganizationService
         await using var transaction = await _repository.BeginTransactionAsync();
         try
         {
+            if (await _repository.GetQueryable().AnyAsync(cancellationToken))
+                throw new BusinessRuleException("Only one organization is allowed per instance.");
+
             if (await NameAlreadyExistsAsync(dto.Name, cancellationToken))
                 throw new BusinessRuleException("An organization with this name already exists.");
 

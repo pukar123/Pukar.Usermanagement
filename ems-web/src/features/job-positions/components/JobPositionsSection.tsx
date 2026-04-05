@@ -6,7 +6,7 @@ import { Button } from "@/shared/components/Button";
 import { Modal } from "@/shared/components/Modal";
 import { Spinner } from "@/shared/components/Spinner";
 import { getErrorMessage } from "@/shared/api/http-client";
-import { defaultOrganizationId } from "@/shared/config/public-env";
+import { useOrganizationContext } from "@/providers/OrganizationProvider";
 import { cn } from "@/shared/utils/cn";
 import {
   useCreateJobPosition,
@@ -20,22 +20,17 @@ const inputClass =
   "mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100";
 
 export function JobPositionsSection() {
-  const [orgFilter, setOrgFilter] = useState(String(defaultOrganizationId));
-  const organizationId = useMemo(() => {
-    const n = Number(orgFilter);
-    return Number.isFinite(n) && n >= 1 ? n : defaultOrganizationId;
-  }, [orgFilter]);
+  const { organizationId: currentOrgId } = useOrganizationContext();
 
-  const { data, isLoading, isError, error } = useJobPositions(organizationId);
-  const createMut = useCreateJobPosition(organizationId);
-  const updateMut = useUpdateJobPosition(organizationId);
-  const deleteMut = useDeleteJobPosition(organizationId);
+  const { data, isLoading, isError, error } = useJobPositions(currentOrgId);
+  const createMut = useCreateJobPosition(currentOrgId);
+  const updateMut = useUpdateJobPosition(currentOrgId);
+  const deleteMut = useDeleteJobPosition(currentOrgId);
 
   const [search, setSearch] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<JobPosition | null>(null);
 
-  const [formOrgId, setFormOrgId] = useState(String(defaultOrganizationId));
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [code, setCode] = useState("");
@@ -53,7 +48,6 @@ export function JobPositionsSection() {
 
   const openCreate = () => {
     setEditing(null);
-    setFormOrgId(String(organizationId));
     setTitle("");
     setDescription("");
     setCode("");
@@ -63,7 +57,6 @@ export function JobPositionsSection() {
 
   const openEdit = (p: JobPosition) => {
     setEditing(p);
-    setFormOrgId(String(p.organizationId));
     setTitle(p.title);
     setDescription(p.description ?? "");
     setCode(p.code ?? "");
@@ -78,9 +71,8 @@ export function JobPositionsSection() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const org = Number(formOrgId);
-    if (!Number.isFinite(org) || org < 1) {
-      toast.error("Enter a valid organization id.");
+    if (currentOrgId == null) {
+      toast.error("Organization is not loaded.");
       return;
     }
     if (!title.trim()) {
@@ -102,7 +94,7 @@ export function JobPositionsSection() {
         toast.success("Position updated.");
       } else {
         await createMut.mutateAsync({
-          organizationId: org,
+          organizationId: currentOrgId,
           title: title.trim(),
           description: description.trim() ? description.trim() : null,
           code: code.trim() ? code.trim() : null,
@@ -128,6 +120,14 @@ export function JobPositionsSection() {
 
   const busy = createMut.isPending || updateMut.isPending;
 
+  if (currentOrgId == null) {
+    return (
+      <div className="flex justify-center py-16">
+        <Spinner />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -136,7 +136,6 @@ export function JobPositionsSection() {
           <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
             Connected to EMS.API{" "}
             <code className="rounded bg-zinc-100 px-1 dark:bg-zinc-800">/api/JobPositions</code>
-            <span className="text-zinc-500"> (list filtered by organization)</span>
           </p>
         </div>
         <Button type="button" onClick={openCreate}>
@@ -144,31 +143,17 @@ export function JobPositionsSection() {
         </Button>
       </div>
 
-      <div className="flex max-w-xl flex-col gap-4 sm:flex-row sm:items-end">
-        <div className="flex-1">
-          <label className="block text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-            Organization id (list)
-          </label>
-          <input
-            type="number"
-            min={1}
-            value={orgFilter}
-            onChange={(e) => setOrgFilter(e.target.value)}
-            className={inputClass}
-          />
-        </div>
-        <div className="flex-1">
-          <label className="block text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-            Search
-          </label>
-          <input
-            type="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Title, code, description"
-            className={inputClass}
-          />
-        </div>
+      <div className="max-w-md">
+        <label className="block text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+          Search
+        </label>
+        <input
+          type="search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Title, code, description"
+          className={inputClass}
+        />
       </div>
 
       {isLoading ? (
@@ -188,7 +173,6 @@ export function JobPositionsSection() {
             <thead className="bg-zinc-50 dark:bg-zinc-900/50">
               <tr>
                 <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Id</th>
-                <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Org</th>
                 <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Title</th>
                 <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Code</th>
                 <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Description</th>
@@ -201,9 +185,6 @@ export function JobPositionsSection() {
                 <tr key={row.id} className="bg-white hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-zinc-900">
                   <td className="whitespace-nowrap px-4 py-3 font-mono text-zinc-600 dark:text-zinc-400">
                     {row.id}
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-3 font-mono text-zinc-600 dark:text-zinc-400">
-                    {row.organizationId}
                   </td>
                   <td className="px-4 py-3 text-zinc-900 dark:text-zinc-100">{row.title}</td>
                   <td className="px-4 py-3 text-zinc-700 dark:text-zinc-300">{row.code ?? "—"}</td>
@@ -243,7 +224,7 @@ export function JobPositionsSection() {
             </tbody>
           </table>
           {filtered.length === 0 ? (
-            <p className="p-6 text-center text-sm text-zinc-500">No positions for this organization (or no matches).</p>
+            <p className="p-6 text-center text-sm text-zinc-500">No positions yet (or no matches).</p>
           ) : null}
         </div>
       )}
@@ -255,21 +236,6 @@ export function JobPositionsSection() {
         className="max-w-lg"
       >
         <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
-          {!editing ? (
-            <div>
-              <label className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-                Organization id
-              </label>
-              <input
-                type="number"
-                min={1}
-                value={formOrgId}
-                onChange={(e) => setFormOrgId(e.target.value)}
-                className={inputClass}
-                required
-              />
-            </div>
-          ) : null}
           <div>
             <label className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Title</label>
             <input

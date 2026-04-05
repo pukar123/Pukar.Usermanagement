@@ -109,7 +109,8 @@ Copy `.env.example` to `.env.local` (gitignored).
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `NEXT_PUBLIC_API_BASE_URL` | Yes | EMS.API base URL, **no trailing slash** (e.g. `http://localhost:5246` when using the `http` launch profile). |
-| `NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID` | Recommended | Default `organizationId` on create-employee flows; must exist in `org.Organizations`. |
+
+The app loads the current organization from **`GET /api/Organizations`** (single-tenant: first row). If none exists, the UI routes to **`/setup`** to create one. No `NEXT_PUBLIC_*` organization id is required.
 
 `NEXT_PUBLIC_*` variables are inlined into the **browser bundle** at build time. After changing them, restart `npm run dev` or rebuild for production.
 
@@ -127,7 +128,7 @@ When building the **`ems-web`** image from the solution root, `NEXT_PUBLIC_*` is
 
 ```bash
 npm install
-cp .env.example .env.local   # then edit URLs / org id
+cp .env.example .env.local   # then edit API URL
 npm run dev
 ```
 

@@ -7,6 +7,9 @@
   },
   "scripts": {
     "dev": "next dev",
+    "dev:all": "concurrently -n api,web -c cyan,magenta \"dotnet run --project ../EMS.API/EMS.API.csproj --launch-profile http\" \"next dev\"",
+    "dev:api": "dotnet run --project ../EMS.API/EMS.API.csproj --launch-profile http",
+    "dev:https": "concurrently -n api,web -c cyan,magenta \"dotnet run --project ../EMS.API/EMS.API.csproj --launch-profile https\" \"next dev\"",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -27,6 +30,7 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "concurrently": "^9.1.2",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

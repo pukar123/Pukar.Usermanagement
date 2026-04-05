@@ -71,7 +71,43 @@ From the repository root:
 dotnet run --project EMS.API
 ```
 
-With the default launch profile, the app listens on HTTPS (see `EMS.API/Properties/launchSettings.json` for URLs).
+Launch URLs and profiles are defined in `EMS.API/Properties/launchSettings.json` (for example, the **`http`** profile serves HTTP at `http://localhost:5246`, and **`https`** adds `https://localhost:7056`).
+
+## Run the API and Next.js frontend together
+
+You can start **EMS.API** and the **Next.js** dev server in one terminal using [concurrently](https://www.npmjs.com/package/concurrently) (installed under **`ems-web`**). Run **`npm install`** inside **`ems-web`** first so dependencies exist.
+
+From the **solution root** (same folder as `EmployeeManagementSystem.sln`):
+
+```bash
+cd ems-web
+npm install
+cd ..
+cp ems-web/.env.example ems-web/.env.local   # Windows: copy ems-web\.env.example ems-web\.env.local
+npm run dev:all
+```
+
+Or from **`ems-web`** only:
+
+```bash
+cd ems-web
+npm install
+cp .env.example .env.local   # Windows: copy .env.example .env.local
+npm run dev:all
+```
+
+Set `NEXT_PUBLIC_API_BASE_URL` in `.env.local` to match the API profile you use (see the table below). On first launch with an empty `org.Organizations` table, the web app prompts for **organization setup** at `/setup` before the main navigation is available. The API enforces **at most one** organization per database on create.
+
+| npm script (from **solution root** or **`ems-web`**) | What it runs |
+|------------------------------------------------------|----------------|
+| `npm run dev:all` | API with **`http`** launch profile **and** `next dev` (typical local setup). Point `NEXT_PUBLIC_API_BASE_URL` at `http://localhost:5246`. |
+| `npm run dev:https` | API with **`https`** profile **and** `next dev`. Use `NEXT_PUBLIC_API_BASE_URL=https://localhost:7056` if you call the API over HTTPS. |
+| `npm run dev:api` | API only (`http` profile). |
+| `npm run dev` | Next.js only (expects the API to be running separately). |
+
+Ensure [CORS](EMS.API/Program.cs) allows your web origin (for example `http://localhost:3000`). If `npm run dev:all` reports that port 3000 is already in use, stop the other Next.js process or free that port.
+
+More detail: [ems-web/README.md](ems-web/README.md).
 
 ## API documentation (OpenAPI)
 

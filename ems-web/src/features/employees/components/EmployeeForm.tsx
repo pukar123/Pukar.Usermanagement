@@ -17,15 +17,14 @@ import { employmentStatusLabels } from "../types/employment-status";
 import { dateInputToApiIso, toDateInputValue } from "../utils/date-format";
 import type { CreateEmployeeRequest, UpdateEmployeeRequest } from "../types/employee.types";
 import { useEmployeeUiStore } from "../store/employee-ui-store";
-
-const defaultOrgId = Number(process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID) || 1;
+import { useOrganizationContext } from "@/providers/OrganizationProvider";
 
 const inputClass =
   "mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100";
 
-function emptyDefaults(): EmployeeFormInput {
+function emptyDefaults(organizationId: number): EmployeeFormInput {
   return {
-    organizationId: defaultOrgId,
+    organizationId,
     employeeNumber: "",
     firstName: "",
     lastName: "",
@@ -89,25 +88,35 @@ type EmployeeFormProps = {
 };
 
 export function EmployeeForm({ mode, employee, onSuccess, onCancel }: EmployeeFormProps) {
+  const { organizationId: currentOrgId } = useOrganizationContext();
   const createMutation = useCreateEmployee();
   const updateMutation = useUpdateEmployee();
   const closeForm = useEmployeeUiStore((s) => s.closeForm);
 
   const form = useForm<EmployeeFormInput, unknown, EmployeeFormValues>({
     resolver: zodResolver(employeeFormSchema),
-    defaultValues: emptyDefaults(),
+    defaultValues:
+      currentOrgId != null ? emptyDefaults(currentOrgId) : emptyDefaults(1),
   });
 
   useEffect(() => {
+    if (currentOrgId == null) return;
     if (mode === "edit" && employee) {
       form.reset(employeeToFormInput(employee));
     } else {
-      form.reset(emptyDefaults());
+      form.reset(emptyDefaults(currentOrgId));
     }
-  }, [mode, employee, form.reset]);
+  }, [mode, employee, currentOrgId, form.reset]);
 
   const onSubmit = (values: EmployeeFormValues) => {
-    const payload = toApiPayload(values) as UpdateEmployeeRequest;
+    if (currentOrgId == null) {
+      toast.error("Organization is not loaded.");
+      return;
+    }
+    const payload = {
+      ...toApiPayload(values),
+      organizationId: currentOrgId,
+    } as UpdateEmployeeRequest;
 
     if (mode === "create") {
       createMutation.mutate(payload as CreateEmployeeRequest, {
@@ -135,16 +144,13 @@ export function EmployeeForm({ mode, employee, onSuccess, onCancel }: EmployeeFo
 
   const pending = createMutation.isPending || updateMutation.isPending;
 
+  if (currentOrgId == null) {
+    return <p className="text-sm text-zinc-500">Loading organization…</p>;
+  }
+
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Organization ID" error={form.formState.errors.organizationId?.message}>
-          <input
-            type="number"
-            className={inputClass}
-            {...form.register("organizationId", { valueAsNumber: true })}
-          />
-        </Field>
         <Field label="Employee number" error={form.formState.errors.employeeNumber?.message}>
           <input type="text" className={inputClass} {...form.register("employeeNumber")} />
         </Field>
