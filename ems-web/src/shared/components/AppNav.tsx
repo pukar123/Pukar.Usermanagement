@@ -24,9 +24,33 @@ export function AppNav() {
   if (needsSetup) {
     return (
       <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
-        <div className="mx-auto flex max-w-6xl items-center px-4 py-3 sm:px-6">
-          <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">EMS — Organization setup</span>
-        </div>
+        <nav
+          className="mx-auto flex max-w-6xl flex-wrap items-center gap-1 px-4 py-3 sm:gap-2 sm:px-6"
+          aria-label="Main"
+        >
+          <Link
+            href="/"
+            className={cn(
+              "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+              pathname === "/"
+                ? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-50"
+                : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100",
+            )}
+          >
+            Home
+          </Link>
+          <Link
+            href="/setup"
+            className={cn(
+              "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+              pathname === "/setup"
+                ? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-50"
+                : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100",
+            )}
+          >
+            Create organization
+          </Link>
+        </nav>
       </header>
     );
   }
@@ -59,6 +83,17 @@ export function AppNav() {
             </Link>
           );
         })}
+        <Link
+          href="/organization/setup"
+          className={cn(
+            "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+            pathname === "/organization/setup"
+              ? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-50"
+              : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100",
+          )}
+        >
+          Organization
+        </Link>
       </nav>
     </header>
   );

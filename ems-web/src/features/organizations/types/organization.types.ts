@@ -11,3 +11,9 @@ export type CreateOrganizationRequest = {
   code?: string | null;
   isActive: boolean;
 };
+
+export type UpdateOrganizationRequest = {
+  name: string;
+  code?: string | null;
+  isActive: boolean;
+};

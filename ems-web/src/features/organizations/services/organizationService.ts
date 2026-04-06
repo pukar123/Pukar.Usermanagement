@@ -1,5 +1,9 @@
 import { httpClient } from "@/shared/api/http-client";
-import type { CreateOrganizationRequest, Organization } from "../types/organization.types";
+import type {
+  CreateOrganizationRequest,
+  Organization,
+  UpdateOrganizationRequest,
+} from "../types/organization.types";
 
 const PATH = "/api/Organizations";
 
@@ -11,6 +15,11 @@ export const organizationService = {
 
   createOrganization: async (body: CreateOrganizationRequest): Promise<Organization> => {
     const { data } = await httpClient.post<Organization>(PATH, body);
+    return data;
+  },
+
+  updateOrganization: async (id: number, body: UpdateOrganizationRequest): Promise<Organization> => {
+    const { data } = await httpClient.put<Organization>(`${PATH}/${id}`, body);
     return data;
   },
 };

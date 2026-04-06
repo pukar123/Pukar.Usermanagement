@@ -6,7 +6,11 @@ import { getErrorMessage } from "@/shared/api/http-client";
 import { Spinner } from "@/shared/components/Spinner";
 import { useOrganizationContext } from "./OrganizationProvider";
 
-const SETUP_PATH = "/setup";
+const SETUP_CREATE_PATH = "/setup";
+const ORG_UPDATE_PATH = "/organization/setup";
+
+/** Routes reachable before an organization exists (home shows create vs update links). */
+const allowedPathsWhenNeedsSetup = new Set<string>(["/", SETUP_CREATE_PATH]);
 
 export function OrganizationGate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -16,12 +20,18 @@ export function OrganizationGate({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (isLoading) return;
 
-    if (needsSetup && pathname !== SETUP_PATH) {
-      router.replace(SETUP_PATH);
+    if (needsSetup) {
+      if (pathname === ORG_UPDATE_PATH) {
+        router.replace("/");
+        return;
+      }
+      if (!allowedPathsWhenNeedsSetup.has(pathname)) {
+        router.replace("/");
+      }
       return;
     }
 
-    if (!needsSetup && pathname === SETUP_PATH) {
+    if (!needsSetup && pathname === SETUP_CREATE_PATH) {
       router.replace("/");
     }
   }, [needsSetup, isLoading, pathname, router]);
@@ -53,16 +63,16 @@ export function OrganizationGate({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (needsSetup && pathname !== SETUP_PATH) {
+  if (needsSetup && !allowedPathsWhenNeedsSetup.has(pathname)) {
     return (
       <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3 px-4">
         <Spinner />
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">Redirecting to setup…</p>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">Redirecting…</p>
       </div>
     );
   }
 
-  if (!needsSetup && pathname === SETUP_PATH) {
+  if (!needsSetup && pathname === SETUP_CREATE_PATH) {
     return (
       <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3 px-4">
         <Spinner />
