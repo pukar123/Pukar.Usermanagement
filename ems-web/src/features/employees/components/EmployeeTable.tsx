@@ -6,11 +6,21 @@ import { Button } from "@/shared/components/Button";
 
 type EmployeeTableProps = {
   employees: Employee[];
+  /** Resolved display labels for job positions; avoids showing raw ids in the grid. */
+  jobPositionLabelById: Map<number, string>;
   onEdit: (e: Employee) => void;
   onDelete: (e: Employee) => void;
 };
 
-export function EmployeeTable({ employees, onEdit, onDelete }: EmployeeTableProps) {
+function formatJobPositionCell(
+  jobPositionId: number | null,
+  jobPositionLabelById: Map<number, string>,
+): string {
+  if (jobPositionId == null) return "—";
+  return jobPositionLabelById.get(jobPositionId) ?? "—";
+}
+
+export function EmployeeTable({ employees, jobPositionLabelById, onEdit, onDelete }: EmployeeTableProps) {
   return (
     <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700">
       <table className="min-w-full divide-y divide-zinc-200 text-left text-sm dark:divide-zinc-700">
@@ -20,7 +30,7 @@ export function EmployeeTable({ employees, onEdit, onDelete }: EmployeeTableProp
             <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Name</th>
             <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Email</th>
             <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Status</th>
-            <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Job pos. id</th>
+            <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Position</th>
             <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Actions</th>
           </tr>
         </thead>
@@ -37,8 +47,8 @@ export function EmployeeTable({ employees, onEdit, onDelete }: EmployeeTableProp
               <td className="px-4 py-3 text-zinc-700 dark:text-zinc-300">
                 {employmentStatusLabels[row.employmentStatus] ?? row.employmentStatus}
               </td>
-              <td className="px-4 py-3 font-mono text-zinc-600 dark:text-zinc-400">
-                {row.jobPositionId ?? "—"}
+              <td className="px-4 py-3 text-zinc-700 dark:text-zinc-300">
+                {formatJobPositionCell(row.jobPositionId, jobPositionLabelById)}
               </td>
               <td className="whitespace-nowrap px-4 py-3">
                 <div className="flex gap-2">

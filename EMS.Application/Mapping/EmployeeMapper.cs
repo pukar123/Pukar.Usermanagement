@@ -15,7 +15,7 @@ internal static class EmployeeMapper
             LocationId = request.LocationId,
             ManagerId = request.ManagerId,
             JobPositionId = request.JobPositionId,
-            EmployeeNumber = request.EmployeeNumber,
+            EmployeeNumber = string.Empty,
             FirstName = request.FirstName,
             LastName = request.LastName,
             Email = request.Email,
@@ -34,7 +34,6 @@ internal static class EmployeeMapper
         entity.LocationId = request.LocationId;
         entity.ManagerId = request.ManagerId;
         entity.JobPositionId = request.JobPositionId;
-        entity.EmployeeNumber = request.EmployeeNumber;
         entity.FirstName = request.FirstName;
         entity.LastName = request.LastName;
         entity.Email = request.Email;

@@ -28,7 +28,6 @@ export type CreateEmployeeRequest = {
   locationId?: number | null;
   managerId?: number | null;
   jobPositionId?: number | null;
-  employeeNumber: string;
   firstName: string;
   lastName: string;
   email: string;

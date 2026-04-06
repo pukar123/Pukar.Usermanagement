@@ -46,7 +46,6 @@ function formatJobLabel(j: JobPosition): string {
 function emptyDefaults(organizationId: number): EmployeeFormInput {
   return {
     organizationId,
-    employeeNumber: "",
     firstName: "",
     lastName: "",
     email: "",
@@ -65,7 +64,6 @@ function employeeToFormInput(emp: Employee): EmployeeFormInput {
   const idStr = (n: number | null) => (n != null ? String(n) : "");
   return {
     organizationId: emp.organizationId,
-    employeeNumber: emp.employeeNumber,
     firstName: emp.firstName,
     lastName: emp.lastName,
     email: emp.email,
@@ -87,7 +85,6 @@ function toApiPayload(values: EmployeeFormValues): CreateEmployeeRequest {
     locationId: values.locationId,
     managerId: values.managerId,
     jobPositionId: values.jobPositionId,
-    employeeNumber: values.employeeNumber,
     firstName: values.firstName,
     lastName: values.lastName,
     email: values.email,
@@ -215,9 +212,19 @@ export function EmployeeForm({ mode, employee, onSuccess, onCancel }: EmployeeFo
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Employee number" error={form.formState.errors.employeeNumber?.message}>
-          <input type="text" className={inputClass} {...form.register("employeeNumber")} />
-        </Field>
+        {mode === "edit" && employee ? (
+          <div className="sm:col-span-2">
+            <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Employee number</p>
+            <p className="mt-1 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-800 dark:border-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-100">
+              {employee.employeeNumber}
+            </p>
+          </div>
+        ) : (
+          <div className="sm:col-span-2 rounded-lg border border-dashed border-zinc-300 bg-zinc-50/80 px-3 py-2 text-sm text-zinc-600 dark:border-zinc-600 dark:bg-zinc-900/30 dark:text-zinc-400">
+            Employee number will be assigned automatically when you save (e.g. <span className="font-mono">EMP001</span>,{" "}
+            <span className="font-mono">EMP002</span>, …).
+          </div>
+        )}
         <Field label="First name" error={form.formState.errors.firstName?.message}>
           <input type="text" className={inputClass} {...form.register("firstName")} />
         </Field>

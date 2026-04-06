@@ -12,7 +12,6 @@ const optionalIdField = z
 
 export const employeeFormSchema = z.object({
   organizationId: z.coerce.number().int().positive("Organization is required"),
-  employeeNumber: z.string().min(1, "Employee number is required"),
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Invalid email"),

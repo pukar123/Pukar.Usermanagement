@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Text.RegularExpressions;
 using EMS.Application.DTOs.Employee;
 using EMS.Domain.Helpers;
 using EMS.Application.Mapping;
@@ -10,6 +12,11 @@ namespace EMS.Application.Services.Employees;
 
 public sealed class EmployeeService : IEmployeeService
 {
+    private static readonly Regex EmployeeNumberSequence = new(
+        @"^EMP(\d+)$",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant,
+        TimeSpan.FromMilliseconds(250));
+
     private readonly IBaseRepository<Employee> _repository;
     private readonly IBaseRepository<JobPositionEntity> _jobPositionRepository;
 
@@ -29,6 +36,7 @@ public sealed class EmployeeService : IEmployeeService
 
         var now = DateTime.UtcNow;
         var entity = EmployeeMapper.ToEntity(request);
+        entity.EmployeeNumber = await AllocateNextEmployeeNumberAsync(request.OrganizationId, cancellationToken);
         entity.CreatedAtUtc = now;
         entity.UpdatedAtUtc = now;
 
@@ -95,5 +103,27 @@ public sealed class EmployeeService : IEmployeeService
 
         if (jobPosition.OrganizationId != organizationId)
             throw new BusinessRuleException("Job position must belong to the same organization as the employee.");
+    }
+
+    /// <summary>
+    /// Next available code in the form EMP001, EMP002, … per organization (based on existing EMP+digits numbers).
+    /// </summary>
+    private async Task<string> AllocateNextEmployeeNumberAsync(int organizationId, CancellationToken cancellationToken)
+    {
+        var rawNumbers = await _repository.GetQueryable()
+            .Where(e => e.OrganizationId == organizationId)
+            .Select(e => e.EmployeeNumber)
+            .ToListAsync(cancellationToken);
+
+        var max = 0;
+        foreach (var raw in rawNumbers)
+        {
+            if (string.IsNullOrWhiteSpace(raw)) continue;
+            var m = EmployeeNumberSequence.Match(raw.Trim());
+            if (m.Success && int.TryParse(m.Groups[1].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var n))
+                max = Math.Max(max, n);
+        }
+
+        return $"EMP{(max + 1).ToString("D3", CultureInfo.InvariantCulture)}";
     }
 }

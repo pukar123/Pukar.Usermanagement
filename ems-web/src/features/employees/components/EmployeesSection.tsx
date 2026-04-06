@@ -2,6 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useJobPositions } from "@/features/job-positions/hooks";
+import type { JobPosition } from "@/features/job-positions/types/job-position.types";
+import { useOrganizationContext } from "@/providers/OrganizationProvider";
 import { Button } from "@/shared/components/Button";
 import { Modal } from "@/shared/components/Modal";
 import { Spinner } from "@/shared/components/Spinner";
@@ -13,9 +16,23 @@ import { useEmployees } from "../hooks";
 import { employeeKeys } from "../services/query-keys";
 import { useEmployeeUiStore } from "../store/employee-ui-store";
 
+function jobPositionLabel(j: JobPosition): string {
+  return j.code ? `${j.title} (${j.code})` : j.title;
+}
+
 export function EmployeesSection() {
   const queryClient = useQueryClient();
+  const { organizationId } = useOrganizationContext();
   const { data, isLoading, isError, error } = useEmployees();
+  const { data: jobPositions = [] } = useJobPositions(organizationId);
+
+  const jobPositionLabelById = useMemo(() => {
+    const map = new Map<number, string>();
+    for (const j of jobPositions) {
+      map.set(j.id, jobPositionLabel(j));
+    }
+    return map;
+  }, [jobPositions]);
   const [search, setSearch] = useState("");
 
   const formMode = useEmployeeUiStore((s) => s.formMode);
@@ -84,6 +101,7 @@ export function EmployeesSection() {
       ) : (
         <EmployeeTable
           employees={filtered}
+          jobPositionLabelById={jobPositionLabelById}
           onEdit={(e) => openEditForm(e)}
           onDelete={(e) => openDeleteDialog(e)}
         />
