@@ -1,4 +1,3 @@
-using System.Reflection;
 using EMS.API.Middleware;
 using EMS.Application.Services.Departments;
 using EMS.Application.Services.Employees;
@@ -45,7 +44,6 @@ try
 
     builder.Services.AddControllers();
     builder.Services.AddOpenApi();
-    builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
     builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
     builder.Services.AddScoped<IEmployeeService, EmployeeService>();

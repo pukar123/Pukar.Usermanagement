@@ -1,6 +1,5 @@
-using AutoMapper;
-using EMS.API.Models.Organization;
 using EMS.Application.DTOs.Organization;
+using EMS.Application.Mapping;
 using EMS.Domain.Helpers;
 using EMS.Application.Services.Organizations;
 using Microsoft.AspNetCore.Mvc;
@@ -12,12 +11,10 @@ namespace EMS.API.Controllers;
 public class OrganizationsController : ControllerBase
 {
     private readonly IOrganizationService _organizationService;
-    private readonly IMapper _mapper;
 
-    public OrganizationsController(IOrganizationService organizationService, IMapper mapper)
+    public OrganizationsController(IOrganizationService organizationService)
     {
         _organizationService = organizationService;
-        _mapper = mapper;
     }
 
     [HttpGet]
@@ -35,15 +32,14 @@ public class OrganizationsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<OrganizationResponse>> Create(
-        [FromBody] CreateOrganizationRequest request,
+    public async Task<ActionResult<OrganizationResponseModel>> Create(
+        [FromBody] OrganizationDTO dto,
         CancellationToken cancellationToken)
     {
         try
         {
-            var dto = _mapper.Map<OrganizationDTO>(request);
             var created = await _organizationService.CreateAsync(dto, cancellationToken);
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, _mapper.Map<OrganizationResponse>(created));
+            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created.ToResponseModel());
         }
         catch (BusinessRuleException ex)
         {
