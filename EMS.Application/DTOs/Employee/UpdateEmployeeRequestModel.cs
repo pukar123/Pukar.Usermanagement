@@ -18,5 +18,4 @@ public class UpdateEmployeeRequestModel
     public DateTime DateOfBirth { get; set; }
     public DateTime DateJoined { get; set; }
     public EmploymentStatus EmploymentStatus { get; set; }
-    public bool IsActive { get; set; }
 }

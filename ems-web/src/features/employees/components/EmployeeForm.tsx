@@ -54,7 +54,6 @@ function emptyDefaults(organizationId: number): EmployeeFormInput {
     dateOfBirth: "",
     dateJoined: "",
     employmentStatus: 0,
-    isActive: true,
     departmentId: "",
     locationId: "",
     managerId: "",
@@ -74,7 +73,6 @@ function employeeToFormInput(emp: Employee): EmployeeFormInput {
     dateOfBirth: toDateInputValue(emp.dateOfBirth),
     dateJoined: toDateInputValue(emp.dateJoined),
     employmentStatus: emp.employmentStatus,
-    isActive: emp.isActive,
     departmentId: idStr(emp.departmentId),
     locationId: idStr(emp.locationId),
     managerId: idStr(emp.managerId),
@@ -97,7 +95,6 @@ function toApiPayload(values: EmployeeFormValues): CreateEmployeeRequest {
     dateOfBirth: dateInputToApiIso(values.dateOfBirth),
     dateJoined: dateInputToApiIso(values.dateJoined),
     employmentStatus: values.employmentStatus,
-    isActive: values.isActive,
   };
 }
 
@@ -247,12 +244,6 @@ export function EmployeeForm({ mode, employee, onSuccess, onCancel }: EmployeeFo
               </option>
             ))}
           </select>
-        </Field>
-        <Field label="Active" error={form.formState.errors.isActive?.message}>
-          <label className="mt-1 flex items-center gap-2 text-sm">
-            <input type="checkbox" {...form.register("isActive")} />
-            <span>Is active</span>
-          </label>
         </Field>
         <Field label="Department (optional)" error={form.formState.errors.departmentId?.message}>
           <Controller

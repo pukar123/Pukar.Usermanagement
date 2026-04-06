@@ -26,7 +26,6 @@ export const employeeFormSchema = z.object({
       v === EmploymentStatus.Terminated,
     { message: "Invalid status" },
   ),
-  isActive: z.boolean(),
   departmentId: optionalIdField,
   locationId: optionalIdField,
   managerId: optionalIdField,

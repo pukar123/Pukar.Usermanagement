@@ -1,5 +1,6 @@
 using EMS.Application.DTOs.Employee;
 using EMS.Domain.DbModels;
+using EMS.Domain.Enums;
 
 namespace EMS.Application.Mapping;
 
@@ -22,7 +23,7 @@ internal static class EmployeeMapper
             DateOfBirth = request.DateOfBirth,
             DateJoined = request.DateJoined,
             EmploymentStatus = request.EmploymentStatus,
-            IsActive = request.IsActive
+            IsActive = request.EmploymentStatus == EmploymentStatus.Active
         };
     }
 
@@ -41,7 +42,7 @@ internal static class EmployeeMapper
         entity.DateOfBirth = request.DateOfBirth;
         entity.DateJoined = request.DateJoined;
         entity.EmploymentStatus = request.EmploymentStatus;
-        entity.IsActive = request.IsActive;
+        entity.IsActive = request.EmploymentStatus == EmploymentStatus.Active;
     }
 
     public static EmployeeResponseModel ToResponse(Employee entity)

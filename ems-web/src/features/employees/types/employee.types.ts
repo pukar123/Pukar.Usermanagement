@@ -16,6 +16,7 @@ export type Employee = {
   dateOfBirth: string;
   dateJoined: string;
   employmentStatus: EmploymentStatusValue;
+  /** Derived from employment lifecycle; true when status is Active. */
   isActive: boolean;
   createdAtUtc: string;
   updatedAtUtc: string;
@@ -35,7 +36,7 @@ export type CreateEmployeeRequest = {
   dateOfBirth: string;
   dateJoined: string;
   employmentStatus: EmploymentStatusValue;
-  isActive: boolean;
 };
+
 
 export type UpdateEmployeeRequest = CreateEmployeeRequest;

@@ -3,7 +3,6 @@
 import type { Employee } from "../types/employee.types";
 import { employmentStatusLabels } from "../types/employment-status";
 import { Button } from "@/shared/components/Button";
-import { cn } from "@/shared/utils/cn";
 
 type EmployeeTableProps = {
   employees: Employee[];
@@ -22,7 +21,6 @@ export function EmployeeTable({ employees, onEdit, onDelete }: EmployeeTableProp
             <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Email</th>
             <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Status</th>
             <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Job pos. id</th>
-            <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Active</th>
             <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">Actions</th>
           </tr>
         </thead>
@@ -41,18 +39,6 @@ export function EmployeeTable({ employees, onEdit, onDelete }: EmployeeTableProp
               </td>
               <td className="px-4 py-3 font-mono text-zinc-600 dark:text-zinc-400">
                 {row.jobPositionId ?? "—"}
-              </td>
-              <td className="px-4 py-3">
-                <span
-                  className={cn(
-                    "inline-flex rounded-full px-2 py-0.5 text-xs font-medium",
-                    row.isActive
-                      ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200"
-                      : "bg-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-                  )}
-                >
-                  {row.isActive ? "Yes" : "No"}
-                </span>
               </td>
               <td className="whitespace-nowrap px-4 py-3">
                 <div className="flex gap-2">

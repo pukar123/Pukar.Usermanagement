@@ -18,5 +18,4 @@ public class CreateEmployeeRequestModel
     public DateTime DateOfBirth { get; set; }
     public DateTime DateJoined { get; set; }
     public EmploymentStatus EmploymentStatus { get; set; } = EmploymentStatus.Active;
-    public bool IsActive { get; set; } = true;
 }
