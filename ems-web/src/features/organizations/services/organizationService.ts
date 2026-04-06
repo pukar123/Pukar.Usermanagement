@@ -1,4 +1,4 @@
-import { httpClient } from "@/shared/api/http-client";
+import { httpClient, postFormData } from "@/shared/api/http-client";
 import type {
   CreateOrganizationRequest,
   Organization,
@@ -21,5 +21,12 @@ export const organizationService = {
   updateOrganization: async (id: number, body: UpdateOrganizationRequest): Promise<Organization> => {
     const { data } = await httpClient.put<Organization>(`${PATH}/${id}`, body);
     return data;
+  },
+
+  /** Multipart field name must be `file` (matches API). Logo bytes live on disk; DB stores `logoRelativePath` only. */
+  uploadOrganizationLogo: async (id: number, file: File): Promise<Organization> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return postFormData<Organization>(`${PATH}/${id}/logo`, formData);
   },
 };

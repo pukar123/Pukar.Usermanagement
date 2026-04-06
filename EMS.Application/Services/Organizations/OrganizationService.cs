@@ -26,6 +26,8 @@ public sealed class OrganizationService : IOrganizationService
 
             dto.Name = StringHelper.NormalizeRequired(dto.Name);
             dto.Code = StringHelper.NormalizeOptional(dto.Code);
+            dto.Description = StringHelper.NormalizeOptional(dto.Description);
+            dto.Motto = StringHelper.NormalizeOptional(dto.Motto);
 
             if (await NameAlreadyExistsAsync(dto.Name, cancellationToken))
                 throw new BusinessRuleException("An organization with this name already exists.");
@@ -72,6 +74,8 @@ public sealed class OrganizationService : IOrganizationService
 
         request.Name = StringHelper.NormalizeRequired(request.Name);
         request.Code = StringHelper.NormalizeOptional(request.Code);
+        request.Description = StringHelper.NormalizeOptional(request.Description);
+        request.Motto = StringHelper.NormalizeOptional(request.Motto);
 
         OrganizationMapper.ApplyUpdate(entity, request);
         _repository.Update(entity);

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useOrganizationContext } from "@/providers/OrganizationProvider";
+import { resolveOrganizationLogoUrl } from "@/shared/utils/organization-logo-url";
 import { cn } from "@/shared/utils/cn";
 
 const mainLinks = [
@@ -20,6 +21,7 @@ function isActive(pathname: string, href: string): boolean {
 export function AppNav() {
   const pathname = usePathname();
   const { needsSetup, currentOrganization } = useOrganizationContext();
+  const logoSrc = resolveOrganizationLogoUrl(currentOrganization?.logoRelativePath);
 
   if (needsSetup) {
     return (
@@ -62,8 +64,17 @@ export function AppNav() {
         aria-label="Main"
       >
         {currentOrganization ? (
-          <span className="mr-2 hidden text-xs text-zinc-500 dark:text-zinc-400 sm:inline-block">
-            {currentOrganization.name}
+          <span className="mr-2 flex items-center gap-2">
+            {logoSrc ? (
+              <img
+                src={logoSrc}
+                alt=""
+                className="h-8 w-8 shrink-0 rounded-md border border-zinc-200 object-contain dark:border-zinc-700"
+              />
+            ) : null}
+            <span className="hidden text-xs text-zinc-500 dark:text-zinc-400 sm:inline-block">
+              {currentOrganization.name}
+            </span>
           </span>
         ) : null}
         {mainLinks.map(({ href, label }) => {
