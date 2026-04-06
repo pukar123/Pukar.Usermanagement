@@ -1,4 +1,5 @@
 using EMS.API.Middleware;
+using EMS.API.Services;
 using EMS.Application.Services.Departments;
 using EMS.Application.Services.Employees;
 using EMS.Application.Services.JobPositions;
@@ -51,6 +52,7 @@ try
     builder.Services.AddScoped<IDepartmentService, DepartmentService>();
     builder.Services.AddScoped<ILocationService, LocationService>();
     builder.Services.AddScoped<IJobPositionService, JobPositionService>();
+    builder.Services.AddScoped<LocalOrganizationLogoStorage>();
 
     builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseSqlServer(
@@ -92,6 +94,11 @@ try
     });
 
     app.UseHttpsRedirection();
+
+    var webRootPath = app.Environment.WebRootPath ?? Path.Combine(app.Environment.ContentRootPath, "wwwroot");
+    Directory.CreateDirectory(Path.Combine(webRootPath, "uploads", "organizations"));
+
+    app.UseStaticFiles();
 
     app.UseCors("EmsWeb");
 

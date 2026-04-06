@@ -42,6 +42,7 @@ public sealed class OrganizationService : IOrganizationService
 
             await transaction.CommitAsync();
             dto.Id = entity.Id;
+            dto.LogoRelativePath = entity.LogoRelativePath;
             return dto;
         }
         catch
@@ -103,10 +104,27 @@ public sealed class OrganizationService : IOrganizationService
             .AnyAsync(o => o.Code != null && o.Code.Trim() == key, cancellationToken);
     }
 
+    public async Task<OrganizationResponseModel?> UpdateLogoRelativePathAsync(
+        int id,
+        string logoRelativePath,
+        CancellationToken cancellationToken = default)
+    {
+        var entity = await _repository.GetByIdAsync(id);
+        if (entity is null)
+            return null;
+
+        entity.LogoRelativePath = logoRelativePath;
+        _repository.Update(entity);
+        await _repository.SaveChangesAsync();
+        return OrganizationMapper.ToResponse(entity);
+    }
+
     private static void MapDtoToEntity(OrganizationDTO dto, Organization entity)
     {
         entity.Name = dto.Name;
         entity.Code = dto.Code;
         entity.IsActive = dto.IsActive;
+        entity.Description = dto.Description;
+        entity.Motto = dto.Motto;
     }
 }

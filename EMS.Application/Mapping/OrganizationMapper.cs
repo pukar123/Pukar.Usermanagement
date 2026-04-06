@@ -10,6 +10,8 @@ internal static class OrganizationMapper
         entity.Name = request.Name;
         entity.Code = request.Code;
         entity.IsActive = request.IsActive;
+        entity.Description = request.Description;
+        entity.Motto = request.Motto;
     }
 
     public static OrganizationResponseModel ToResponse(Organization entity)
@@ -19,7 +21,10 @@ internal static class OrganizationMapper
             Id = entity.Id,
             Name = entity.Name,
             Code = entity.Code,
-            IsActive = entity.IsActive
+            IsActive = entity.IsActive,
+            Description = entity.Description,
+            Motto = entity.Motto,
+            LogoRelativePath = entity.LogoRelativePath
         };
     }
 }

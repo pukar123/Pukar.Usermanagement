@@ -19,6 +19,15 @@ public sealed class OrganizationConfiguration : IEntityTypeConfiguration<Organiz
         builder.Property(x => x.Code)
             .HasMaxLength(32);
 
+        builder.Property(x => x.Description)
+            .HasMaxLength(4000);
+
+        builder.Property(x => x.Motto)
+            .HasMaxLength(500);
+
+        builder.Property(x => x.LogoRelativePath)
+            .HasMaxLength(500);
+
         builder.HasIndex(x => x.Code)
             .IsUnique()
             .HasFilter("[Code] IS NOT NULL");

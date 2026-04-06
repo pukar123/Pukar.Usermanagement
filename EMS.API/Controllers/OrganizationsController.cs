@@ -1,3 +1,4 @@
+using EMS.API.Services;
 using EMS.Application.DTOs.Organization;
 using EMS.Application.Mapping;
 using EMS.Domain.Helpers;
@@ -11,10 +12,14 @@ namespace EMS.API.Controllers;
 public class OrganizationsController : ControllerBase
 {
     private readonly IOrganizationService _organizationService;
+    private readonly LocalOrganizationLogoStorage _logoStorage;
 
-    public OrganizationsController(IOrganizationService organizationService)
+    public OrganizationsController(
+        IOrganizationService organizationService,
+        LocalOrganizationLogoStorage logoStorage)
     {
         _organizationService = organizationService;
+        _logoStorage = logoStorage;
     }
 
     [HttpGet]
@@ -55,6 +60,35 @@ public class OrganizationsController : ControllerBase
     {
         var updated = await _organizationService.UpdateAsync(id, request, cancellationToken);
         return updated is null ? NotFound() : Ok(updated);
+    }
+
+    /// <summary>Upload a logo image; file is stored on disk under wwwroot/uploads. Only the relative URL path is saved in the database.</summary>
+    [HttpPost("{id:int}/logo")]
+    [RequestSizeLimit(6 * 1024 * 1024)]
+    [RequestFormLimits(MultipartBodyLengthLimit = 6 * 1024 * 1024)]
+    public async Task<ActionResult<OrganizationResponseModel>> UploadLogo(
+        int id,
+        IFormFile? file,
+        CancellationToken cancellationToken)
+    {
+        if (file is null || file.Length == 0)
+            return BadRequest(new { message = "A logo file is required." });
+
+        var existing = await _organizationService.GetByIdAsync(id, cancellationToken);
+        if (existing is null)
+            return NotFound();
+
+        try
+        {
+            _logoStorage.TryDeleteFile(existing.LogoRelativePath);
+            var relativePath = await _logoStorage.SaveLogoAsync(id, file, cancellationToken);
+            var updated = await _organizationService.UpdateLogoRelativePathAsync(id, relativePath, cancellationToken);
+            return updated is null ? NotFound() : Ok(updated);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [HttpDelete("{id:int}")]

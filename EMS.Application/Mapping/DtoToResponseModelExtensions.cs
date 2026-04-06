@@ -31,6 +31,9 @@ public static class DtoToResponseModelExtensions
             Name = dto.Name,
             Code = dto.Code,
             IsActive = dto.IsActive,
+            Description = dto.Description,
+            Motto = dto.Motto,
+            LogoRelativePath = dto.LogoRelativePath,
         };
     }
 }
