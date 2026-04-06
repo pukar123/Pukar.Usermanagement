@@ -21,6 +21,9 @@ public sealed class DepartmentService : IDepartmentService
         await using var transaction = await _repository.BeginTransactionAsync();
         try
         {
+            dto.Name = StringHelper.NormalizeRequired(dto.Name);
+            dto.Code = StringHelper.NormalizeOptional(dto.Code);
+
             if (await NameAlreadyExistsInOrgAsync(dto.OrganizationId, dto.Name, cancellationToken))
                 throw new BusinessRuleException("A department with this name already exists in the organization.");
 
@@ -73,6 +76,9 @@ public sealed class DepartmentService : IDepartmentService
         if (entity is null)
             return null;
 
+        request.Name = StringHelper.NormalizeRequired(request.Name);
+        request.Code = StringHelper.NormalizeOptional(request.Code);
+
         DepartmentMapper.ApplyUpdate(entity, request);
         _repository.Update(entity);
         await _repository.SaveChangesAsync();
@@ -92,14 +98,20 @@ public sealed class DepartmentService : IDepartmentService
 
     private async Task<bool> NameAlreadyExistsInOrgAsync(int organizationId, string name, CancellationToken cancellationToken)
     {
+        var key = name.Trim().ToLowerInvariant();
         return await _repository.GetQueryable()
-            .AnyAsync(d => d.OrganizationId == organizationId && d.Name == name, cancellationToken);
+            .AnyAsync(
+                d => d.OrganizationId == organizationId && d.Name.Trim().ToLower() == key,
+                cancellationToken);
     }
 
     private async Task<bool> CodeAlreadyExistsInOrgAsync(int organizationId, string code, CancellationToken cancellationToken)
     {
+        var key = code.Trim();
         return await _repository.GetQueryable()
-            .AnyAsync(d => d.OrganizationId == organizationId && d.Code == code, cancellationToken);
+            .AnyAsync(
+                d => d.OrganizationId == organizationId && d.Code != null && d.Code.Trim() == key,
+                cancellationToken);
     }
 
     private static void MapDtoToEntity(DepartmentDTO dto, Department entity)

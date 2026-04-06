@@ -23,6 +23,10 @@ public sealed class JobPositionService : IJobPositionService
 
     public async Task<JobPositionResponseModel> CreateAsync(CreateJobPositionRequestModel request, CancellationToken cancellationToken = default)
     {
+        request.Title = StringHelper.NormalizeRequired(request.Title);
+        request.Code = StringHelper.NormalizeOptional(request.Code);
+        request.Description = StringHelper.NormalizeOptional(request.Description);
+
         if (await TitleExistsInOrgAsync(request.OrganizationId, request.Title, cancellationToken))
             throw new BusinessRuleException("A job position with this title already exists in the organization.");
 
@@ -56,6 +60,10 @@ public sealed class JobPositionService : IJobPositionService
         if (entity is null)
             return null;
 
+        request.Title = StringHelper.NormalizeRequired(request.Title);
+        request.Code = StringHelper.NormalizeOptional(request.Code);
+        request.Description = StringHelper.NormalizeOptional(request.Description);
+
         if (await TitleExistsInOrgAsync(entity.OrganizationId, request.Title, cancellationToken, id))
             throw new BusinessRuleException("A job position with this title already exists in the organization.");
 
@@ -85,7 +93,9 @@ public sealed class JobPositionService : IJobPositionService
 
     private async Task<bool> TitleExistsInOrgAsync(int organizationId, string title, CancellationToken cancellationToken, int? exceptId = null)
     {
-        var q = _repository.GetQueryable().Where(j => j.OrganizationId == organizationId && j.Title == title);
+        var key = title.Trim().ToLowerInvariant();
+        var q = _repository.GetQueryable().Where(
+            j => j.OrganizationId == organizationId && j.Title.Trim().ToLower() == key);
         if (exceptId is int eid)
             q = q.Where(j => j.Id != eid);
         return await q.AnyAsync(cancellationToken);
@@ -93,7 +103,9 @@ public sealed class JobPositionService : IJobPositionService
 
     private async Task<bool> CodeExistsInOrgAsync(int organizationId, string code, CancellationToken cancellationToken, int? exceptId = null)
     {
-        var q = _repository.GetQueryable().Where(j => j.OrganizationId == organizationId && j.Code == code);
+        var key = code.Trim();
+        var q = _repository.GetQueryable().Where(
+            j => j.OrganizationId == organizationId && j.Code != null && j.Code.Trim() == key);
         if (exceptId is int eid)
             q = q.Where(j => j.Id != eid);
         return await q.AnyAsync(cancellationToken);

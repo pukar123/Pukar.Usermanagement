@@ -21,6 +21,10 @@ public sealed class EmployeeService : IEmployeeService
 
     public async Task<EmployeeResponseModel> CreateAsync(CreateEmployeeRequestModel request, CancellationToken cancellationToken = default)
     {
+        request.Email = StringHelper.NormalizeRequired(request.Email);
+        if (!StringHelper.IsValidEmail(request.Email))
+            throw new BusinessRuleException("Invalid email address.");
+
         await EnsureJobPositionMatchesOrganizationAsync(request.OrganizationId, request.JobPositionId, cancellationToken);
 
         var now = DateTime.UtcNow;
@@ -51,6 +55,10 @@ public sealed class EmployeeService : IEmployeeService
         var entity = await _repository.GetByIdAsync(id);
         if (entity is null)
             return null;
+
+        request.Email = StringHelper.NormalizeRequired(request.Email);
+        if (!StringHelper.IsValidEmail(request.Email))
+            throw new BusinessRuleException("Invalid email address.");
 
         await EnsureJobPositionMatchesOrganizationAsync(request.OrganizationId, request.JobPositionId, cancellationToken);
 

@@ -24,6 +24,9 @@ public sealed class OrganizationService : IOrganizationService
             if (await _repository.GetQueryable().AnyAsync(cancellationToken))
                 throw new BusinessRuleException("Only one organization is allowed per instance.");
 
+            dto.Name = StringHelper.NormalizeRequired(dto.Name);
+            dto.Code = StringHelper.NormalizeOptional(dto.Code);
+
             if (await NameAlreadyExistsAsync(dto.Name, cancellationToken))
                 throw new BusinessRuleException("An organization with this name already exists.");
 
@@ -66,6 +69,9 @@ public sealed class OrganizationService : IOrganizationService
         if (entity is null)
             return null;
 
+        request.Name = StringHelper.NormalizeRequired(request.Name);
+        request.Code = StringHelper.NormalizeOptional(request.Code);
+
         OrganizationMapper.ApplyUpdate(entity, request);
         _repository.Update(entity);
         await _repository.SaveChangesAsync();
@@ -85,14 +91,16 @@ public sealed class OrganizationService : IOrganizationService
 
     private async Task<bool> NameAlreadyExistsAsync(string name, CancellationToken cancellationToken)
     {
+        var key = name.Trim().ToLowerInvariant();
         return await _repository.GetQueryable()
-            .AnyAsync(o => o.Name == name, cancellationToken);
+            .AnyAsync(o => o.Name.Trim().ToLower() == key, cancellationToken);
     }
 
     private async Task<bool> CodeAlreadyExistsAsync(string code, CancellationToken cancellationToken)
     {
+        var key = code.Trim();
         return await _repository.GetQueryable()
-            .AnyAsync(o => o.Code == code, cancellationToken);
+            .AnyAsync(o => o.Code != null && o.Code.Trim() == key, cancellationToken);
     }
 
     private static void MapDtoToEntity(OrganizationDTO dto, Organization entity)
