@@ -20,6 +20,8 @@ Backend API for employee and organization directory data. The solution uses a la
 
 More detail: [docs/architecture.md](docs/architecture.md).
 
+Cursor rules for layering and naming live in [`.cursor/rules/`](.cursor/rules/).
+
 ## Docker Compose (SQL Server, MongoDB, Redis, Mongo Express, Next.js)
 
 - **[docker-compose.yml](docker-compose.yml)** — infrastructure plus **`ems-web`** (production Next.js image on port **3000**).

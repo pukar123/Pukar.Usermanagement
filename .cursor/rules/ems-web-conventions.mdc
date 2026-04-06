@@ -1,0 +1,30 @@
+---
+description: Next.js (App Router) structure and TS/React naming for ems-web
+globs: "ems-web/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# EMS web (Next.js) conventions
+
+## Layout
+
+- **App Router**: `ems-web/src/app/` — `layout.tsx`, `page.tsx`, route segments per URL.
+- **Features** (bounded context): `ems-web/src/features/{area}/` — `components/`, `hooks/`, `services/`, `types/` (and similar) as needed.
+- **Shared**: `ems-web/src/shared/` — `api/` (HTTP client), `components/`, `utils/`.
+- **Providers**: `ems-web/src/providers/` — e.g. React Query provider.
+
+## React and TypeScript
+
+- **Components**: **PascalCase** names; files **`PascalCase.tsx`** for components (e.g. `EmployeeForm.tsx`, `EmployeesSection.tsx`).
+- **Hooks**: prefix **`use`**, file **`use{Thing}.ts`** (e.g. `useEmployees.ts`).
+- **Services / API**: **`camelCase.ts`** for modules (e.g. `employeeService.ts`, `http-client.ts`).
+- **Types**: `*.types.ts` or colocated types; align with API **camelCase** JSON property names.
+
+## API client
+
+- Base URL: **`NEXT_PUBLIC_API_BASE_URL`** in `.env.local` (no trailing slash).
+- Use the shared axios/fetch wrapper under `src/shared/api/`.
+
+## Imports
+
+- Use path alias **`@/`** (see `tsconfig`) for `src/` imports.

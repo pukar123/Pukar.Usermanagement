@@ -1,0 +1,44 @@
+---
+description: C# / .NET naming and file conventions for EMS backend projects
+globs: "**/*.{cs,csproj,sln}"
+alwaysApply: false
+---
+
+# EMS C# and project naming
+
+Applies to **EMS.Domain**, **EMS.Application**, **EMS.Infrastructure**, **EMS.API**.
+
+## Assemblies and solution
+
+- Project names: `EMS.{Domain,Application,Infrastructure,API}` — **PascalCase**, **`EMS.`** prefix for backend assemblies.
+- Solution file: `EmployeeManagementSystem.sln`.
+
+## Types and members
+
+- **Public** types, methods, properties: **PascalCase** (`DepartmentService`, `GetByIdAsync`).
+- **Interfaces**: prefix **`I`** (`IDepartmentService`, `IBaseRepository<T>`).
+- **Async** methods that perform I/O: suffix **`Async`**, return `Task` / `Task<T>`.
+- **Parameters and locals**: **camelCase** (`cancellationToken`, `organizationId`).
+- **Private fields** (when used): leading underscore `_camelCase` (match existing files).
+
+## DTOs and API models
+
+- Request/response models: **`Create{Entity}RequestModel`**, **`Update{Entity}RequestModel`**, **`{Entity}ResponseModel`**.
+- Composite transfer objects used in the application layer: **`{Entity}DTO`** when appropriate.
+- **API controllers** bind **Application** DTOs; avoid duplicating HTTP-only types unless the contract intentionally diverges.
+
+## Controllers
+
+- Class name: **`{PluralResource}Controller`** (e.g. `EmployeesController`, `DepartmentsController`).
+- Route: `[Route("api/[controller]")]` (default plural resource name).
+- Actions: names that reflect HTTP semantics (`GetAll`, `GetById`, `Create`, `Update`, `Delete`).
+
+## Domain helpers
+
+- Exceptions: **`BusinessRuleException`** in `EMS.Domain.Helpers` for business-rule violations.
+- Static helpers: **`StringHelper`** static class pattern for domain-safe string utilities.
+
+## Files
+
+- One primary **public** type per file; **file name** matches the type name (C# convention).
+- Mapping helpers: `EMS.Application/Mapping/` — `internal static` mapper classes per aggregate where used.

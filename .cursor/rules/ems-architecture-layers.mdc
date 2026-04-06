@@ -1,0 +1,44 @@
+---
+description: EMS layered architecture — project roles, dependencies, DTO and service layout
+alwaysApply: true
+---
+
+# EMS architecture (layers)
+
+Full narrative and diagrams live in [docs/architecture.md](docs/architecture.md). Follow these boundaries when adding or changing code.
+
+## Projects
+
+| Project | Responsibility |
+|---------|----------------|
+| **EMS.Domain** | Entities (`DbModels`), EF `AppDbContext`, entity configurations, migrations, `IBaseRepository<T>` (and other domain interfaces). |
+| **EMS.Application** | DTOs per business area, application services, static mapping helpers under `Mapping/`. |
+| **EMS.Infrastructure** | `BaseRepository<T>` and other implementations wired to `AppDbContext`. |
+| **EMS.API** | ASP.NET Core host: controllers, `Program.cs`, middleware, health, OpenAPI. **No** direct `DbContext` or EF usage in controllers. |
+| **ems-web** | Next.js client (separate from backend projects above). |
+
+## Dependency direction
+
+- **EMS.API** references **EMS.Application** (and indirectly Domain for hosting/migrations tooling as configured).
+- **EMS.Application** uses **Domain** abstractions (e.g. `IBaseRepository<T>`, entities); it **must not** reference **EMS.Infrastructure** directly.
+- **EMS.Infrastructure** implements Domain interfaces and references **EMS.Domain** + EF Core.
+
+## Request flow
+
+Controllers call **application services** only. Services use **mappers** and **`IBaseRepository<T>`** to persist; **Infrastructure** implements the repository.
+
+## DTOs (Application)
+
+- Location: `EMS.Application/DTOs/{Area}/` (e.g. `Employee`, `Organization`, `Department`).
+- Naming: `Create*RequestModel`, `Update*RequestModel`, `*ResponseModel`; use `*DTO` where a composite transfer object is shared (e.g. `DepartmentDTO`).
+- **Flat** shapes: scalars and enums; FKs as `int` / `int?` — **no** navigation properties on DTOs.
+- Namespaces: `EMS.Application.DTOs.{Area}` matching folder names.
+
+## Services
+
+- Interface: `I{Entity}Service` in `EMS.Application/Services/{Area}/`.
+- Implementation: `{Entity}Service` in the same area folder.
+
+## DI
+
+Register repositories and services in `EMS.API/Program.cs` (scoped services, open-generic repository).
