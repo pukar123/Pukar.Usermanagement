@@ -1,12 +1,21 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useMemo } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useDepartments } from "@/features/departments/hooks";
+import { useJobPositions } from "@/features/job-positions/hooks";
+import type { Department } from "@/features/departments/types/department.types";
+import type { JobPosition } from "@/features/job-positions/types/job-position.types";
+import { useLocations } from "@/features/locations/hooks";
+import type { Location } from "@/features/locations/types/location.types";
 import { Button } from "@/shared/components/Button";
+import { SearchableSelect } from "@/shared/components/SearchableSelect";
 import { getErrorMessage } from "@/shared/api/http-client";
-import { useCreateEmployee, useUpdateEmployee } from "../hooks";
+import { nullableNumberToStringId, stringIdFieldToNullableNumber } from "@/shared/utils/optional-id-string";
+import { toSelectOptions } from "@/shared/utils/to-select-options";
+import { useCreateEmployee, useEmployees, useUpdateEmployee } from "../hooks";
 import {
   employeeFormSchema,
   type EmployeeFormInput,
@@ -21,6 +30,18 @@ import { useOrganizationContext } from "@/providers/OrganizationProvider";
 
 const inputClass =
   "mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100";
+
+function formatDepartmentLabel(d: Department): string {
+  return d.code ? `${d.name} (${d.code})` : d.name;
+}
+
+function formatLocationLabel(l: Location): string {
+  return l.city ? `${l.name} — ${l.city}` : l.name;
+}
+
+function formatJobLabel(j: JobPosition): string {
+  return j.code ? `${j.title} (${j.code})` : j.title;
+}
 
 function emptyDefaults(organizationId: number): EmployeeFormInput {
   return {
@@ -92,6 +113,52 @@ export function EmployeeForm({ mode, employee, onSuccess, onCancel }: EmployeeFo
   const createMutation = useCreateEmployee();
   const updateMutation = useUpdateEmployee();
   const closeForm = useEmployeeUiStore((s) => s.closeForm);
+
+  const { data: departments = [], isLoading: departmentsLoading } = useDepartments();
+  const { data: locations = [], isLoading: locationsLoading } = useLocations();
+  const { data: employees = [], isLoading: employeesLoading } = useEmployees();
+  const { data: jobPositions = [], isLoading: jobPositionsLoading } = useJobPositions(currentOrgId);
+
+  const departmentOptions = useMemo(
+    () =>
+      toSelectOptions(
+        departments.filter((d) => d.organizationId === currentOrgId),
+        (d) => d.id,
+        formatDepartmentLabel,
+      ),
+    [departments, currentOrgId],
+  );
+
+  const locationOptions = useMemo(
+    () =>
+      toSelectOptions(
+        locations.filter((l) => l.organizationId === currentOrgId),
+        (l) => l.id,
+        formatLocationLabel,
+      ),
+    [locations, currentOrgId],
+  );
+
+  const managerCandidates = useMemo(() => {
+    return employees.filter((e) => {
+      if (e.organizationId !== currentOrgId) return false;
+      if (mode === "edit" && employee && e.id === employee.id) return false;
+      return true;
+    });
+  }, [employees, currentOrgId, mode, employee]);
+
+  const managerOptions = useMemo(
+    () =>
+      toSelectOptions(managerCandidates, (e) => e.id, (e) =>
+        `${e.firstName} ${e.lastName} (${e.employeeNumber})`,
+      ),
+    [managerCandidates],
+  );
+
+  const jobOptions = useMemo(
+    () => toSelectOptions(jobPositions, (j) => j.id, formatJobLabel),
+    [jobPositions],
+  );
 
   const form = useForm<EmployeeFormInput, unknown, EmployeeFormValues>({
     resolver: zodResolver(employeeFormSchema),
@@ -187,17 +254,73 @@ export function EmployeeForm({ mode, employee, onSuccess, onCancel }: EmployeeFo
             <span>Is active</span>
           </label>
         </Field>
-        <Field label="Department ID (optional)" error={form.formState.errors.departmentId?.message}>
-          <input type="text" className={inputClass} placeholder="e.g. 1" {...form.register("departmentId")} />
+        <Field label="Department (optional)" error={form.formState.errors.departmentId?.message}>
+          <Controller
+            name="departmentId"
+            control={form.control}
+            render={({ field }) => (
+              <SearchableSelect<number>
+                options={departmentOptions}
+                value={stringIdFieldToNullableNumber(field.value)}
+                onChange={(v) => field.onChange(nullableNumberToStringId(v))}
+                placeholder="Search departments…"
+                emptyLabel="No department"
+                disabled={departmentsLoading}
+                aria-invalid={!!form.formState.errors.departmentId}
+              />
+            )}
+          />
         </Field>
-        <Field label="Location ID (optional)" error={form.formState.errors.locationId?.message}>
-          <input type="text" className={inputClass} {...form.register("locationId")} />
+        <Field label="Location (optional)" error={form.formState.errors.locationId?.message}>
+          <Controller
+            name="locationId"
+            control={form.control}
+            render={({ field }) => (
+              <SearchableSelect<number>
+                options={locationOptions}
+                value={stringIdFieldToNullableNumber(field.value)}
+                onChange={(v) => field.onChange(nullableNumberToStringId(v))}
+                placeholder="Search locations…"
+                emptyLabel="No location"
+                disabled={locationsLoading}
+                aria-invalid={!!form.formState.errors.locationId}
+              />
+            )}
+          />
         </Field>
-        <Field label="Manager ID (optional)" error={form.formState.errors.managerId?.message}>
-          <input type="text" className={inputClass} {...form.register("managerId")} />
+        <Field label="Manager (optional)" error={form.formState.errors.managerId?.message}>
+          <Controller
+            name="managerId"
+            control={form.control}
+            render={({ field }) => (
+              <SearchableSelect<number>
+                options={managerOptions}
+                value={stringIdFieldToNullableNumber(field.value)}
+                onChange={(v) => field.onChange(nullableNumberToStringId(v))}
+                placeholder="Search employees…"
+                emptyLabel="No manager"
+                disabled={employeesLoading}
+                aria-invalid={!!form.formState.errors.managerId}
+              />
+            )}
+          />
         </Field>
-        <Field label="Job position ID (optional)" error={form.formState.errors.jobPositionId?.message}>
-          <input type="text" className={inputClass} {...form.register("jobPositionId")} />
+        <Field label="Job position (optional)" error={form.formState.errors.jobPositionId?.message}>
+          <Controller
+            name="jobPositionId"
+            control={form.control}
+            render={({ field }) => (
+              <SearchableSelect<number>
+                options={jobOptions}
+                value={stringIdFieldToNullableNumber(field.value)}
+                onChange={(v) => field.onChange(nullableNumberToStringId(v))}
+                placeholder="Search job positions…"
+                emptyLabel="No job position"
+                disabled={jobPositionsLoading}
+                aria-invalid={!!form.formState.errors.jobPositionId}
+              />
+            )}
+          />
         </Field>
       </div>
 

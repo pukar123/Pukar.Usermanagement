@@ -4,10 +4,12 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/shared/components/Button";
 import { Modal } from "@/shared/components/Modal";
+import { SearchableSelect } from "@/shared/components/SearchableSelect";
 import { Spinner } from "@/shared/components/Spinner";
 import { getErrorMessage } from "@/shared/api/http-client";
 import { useOrganizationContext } from "@/providers/OrganizationProvider";
 import { cn } from "@/shared/utils/cn";
+import { toSelectOptions } from "@/shared/utils/to-select-options";
 import {
   useCreateDepartment,
   useDeleteDepartment,
@@ -18,6 +20,10 @@ import type { Department } from "../types/department.types";
 
 const inputClass =
   "mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100";
+
+function formatDepartmentLabel(d: Department): string {
+  return d.code ? `${d.name} (${d.code})` : d.name;
+}
 
 export function DepartmentsSection() {
   const { organizationId: currentOrgId } = useOrganizationContext();
@@ -44,6 +50,25 @@ export function DepartmentsSection() {
       return hay.includes(q);
     });
   }, [data, search]);
+
+  const departmentNameById = useMemo(() => {
+    const map = new Map<number, string>();
+    for (const d of data ?? []) {
+      map.set(d.id, d.name);
+    }
+    return map;
+  }, [data]);
+
+  const parentDepartmentOptions = useMemo(() => {
+    const list = data ?? [];
+    return toSelectOptions(
+      list.filter(
+        (d) => d.organizationId === currentOrgId && (editing == null || d.id !== editing.id),
+      ),
+      (d) => d.id,
+      formatDepartmentLabel,
+    );
+  }, [data, currentOrgId, editing]);
 
   const openCreate = () => {
     setEditing(null);
@@ -193,8 +218,10 @@ export function DepartmentsSection() {
                   </td>
                   <td className="px-4 py-3 text-zinc-900 dark:text-zinc-100">{row.name}</td>
                   <td className="px-4 py-3 text-zinc-700 dark:text-zinc-300">{row.code ?? "—"}</td>
-                  <td className="px-4 py-3 font-mono text-zinc-600 dark:text-zinc-400">
-                    {row.parentDepartmentId ?? "—"}
+                  <td className="px-4 py-3 text-zinc-700 dark:text-zinc-300">
+                    {row.parentDepartmentId != null
+                      ? (departmentNameById.get(row.parentDepartmentId) ?? `Id ${row.parentDepartmentId}`)
+                      : "—"}
                   </td>
                   <td className="px-4 py-3">
                     <span
@@ -263,15 +290,14 @@ export function DepartmentsSection() {
           </div>
           <div>
             <label className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-              Parent department id
+              Parent department (optional)
             </label>
-            <input
-              type="text"
-              inputMode="numeric"
-              value={parentDepartmentId}
-              onChange={(e) => setParentDepartmentId(e.target.value)}
-              className={inputClass}
-              placeholder="Optional"
+            <SearchableSelect<number>
+              options={parentDepartmentOptions}
+              value={parseOptionalInt(parentDepartmentId)}
+              onChange={(v) => setParentDepartmentId(v === null ? "" : String(v))}
+              placeholder="Search parent department…"
+              emptyLabel="No parent"
             />
           </div>
           <label className="flex items-center gap-2 text-sm text-zinc-800 dark:text-zinc-200">
