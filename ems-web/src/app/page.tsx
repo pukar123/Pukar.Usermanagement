@@ -14,10 +14,6 @@ export default function Home() {
         <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
           Employee Management System
         </h1>
-        <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-          Next.js frontend for EMS.API. Set <code className="rounded bg-zinc-100 px-1 dark:bg-zinc-800">NEXT_PUBLIC_API_BASE_URL</code> in{" "}
-          <code className="rounded bg-zinc-100 px-1 dark:bg-zinc-800">.env.local</code> and enable CORS on the API.
-        </p>
         <OrganizationSetupLinks />
       </div>
       <ul className="grid gap-4 sm:grid-cols-3">
