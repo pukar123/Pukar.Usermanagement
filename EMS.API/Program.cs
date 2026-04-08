@@ -10,6 +10,7 @@ using EMS.Domain.Repositories.Interface;
 using EMS.Infrastructure.Repositories.Implementations;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
+using Pukar.Usermanagement.API.Extensions;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -43,8 +44,10 @@ try
         });
     });
 
-    builder.Services.AddControllers();
+    builder.Services.AddControllers().AddPukarUserManagementControllers();
     builder.Services.AddOpenApi();
+
+    builder.Services.AddPukarUserManagementApi(builder.Configuration);
 
     builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
     builder.Services.AddScoped<IEmployeeService, EmployeeService>();
@@ -102,6 +105,7 @@ try
 
     app.UseCors("EmsWeb");
 
+    app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapHealthChecks("/health");
