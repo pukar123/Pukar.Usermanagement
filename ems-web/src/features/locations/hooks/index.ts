@@ -1,1 +1,0 @@
-export { useLocations } from "./useLocations";
