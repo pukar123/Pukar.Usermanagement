@@ -1592,6 +1592,16 @@
             "rid": "win"
           }
         }
+      },
+      "Pukar.Shared/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "compile": {
+          "bin/placeholder/Pukar.Shared.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Pukar.Shared.dll": {}
+        }
       }
     }
   },
@@ -4670,6 +4680,11 @@
         "system.windows.extensions.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "Pukar.Shared/1.0.0": {
+      "type": "project",
+      "path": "../Pukar.Shared/Pukar.Shared.csproj",
+      "msbuildProject": "../Pukar.Shared/Pukar.Shared.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -4677,7 +4692,8 @@
       "Microsoft.EntityFrameworkCore >= 9.0.4",
       "Microsoft.EntityFrameworkCore.Design >= 9.0.4",
       "Microsoft.EntityFrameworkCore.Relational >= 9.0.4",
-      "Microsoft.EntityFrameworkCore.SqlServer >= 9.0.4"
+      "Microsoft.EntityFrameworkCore.SqlServer >= 9.0.4",
+      "Pukar.Shared >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -4687,11 +4703,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj",
+      "projectUniqueName": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj",
       "projectName": "Pukar.Usermanagement.Domain",
-      "projectPath": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj",
+      "projectPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj",
       "packagesPath": "C:\\Users\\pukar\\.nuget\\packages\\",
-      "outputPath": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\obj\\",
+      "outputPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -4712,7 +4728,11 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Shared\\Pukar.Shared.csproj": {
+              "projectPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Shared\\Pukar.Shared.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

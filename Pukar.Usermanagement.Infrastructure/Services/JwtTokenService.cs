@@ -21,6 +21,7 @@ public sealed class JwtTokenService : IJwtTokenService
         int userId,
         string email,
         string? userName,
+        IReadOnlyCollection<string> roles,
         DateTime utcNow,
         out DateTime accessTokenExpiresAtUtc)
     {
@@ -42,6 +43,9 @@ public sealed class JwtTokenService : IJwtTokenService
 
         if (!string.IsNullOrWhiteSpace(userName))
             claims.Add(new Claim(JwtRegisteredClaimNames.Name, userName));
+
+        foreach (var role in roles.Where(r => !string.IsNullOrWhiteSpace(r)).Distinct(StringComparer.OrdinalIgnoreCase))
+            claims.Add(new Claim(ClaimTypes.Role, role));
 
         var token = new JwtSecurityToken(
             issuer: opt.Issuer,

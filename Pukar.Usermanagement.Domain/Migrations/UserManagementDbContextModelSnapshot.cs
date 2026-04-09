@@ -61,6 +61,35 @@ namespace Pukar.Usermanagement.Domain.Migrations
                     b.ToTable("RefreshTokens", "um");
                 });
 
+            modelBuilder.Entity("Pukar.Usermanagement.Domain.DbModels.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique();
+
+                    b.ToTable("Roles", "um");
+                });
+
             modelBuilder.Entity("Pukar.Usermanagement.Domain.DbModels.User", b =>
                 {
                     b.Property<int>("Id")
@@ -105,6 +134,21 @@ namespace Pukar.Usermanagement.Domain.Migrations
                     b.ToTable("Users", "um");
                 });
 
+            modelBuilder.Entity("Pukar.Usermanagement.Domain.DbModels.UserRole", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserRoles", "um");
+                });
+
             modelBuilder.Entity("Pukar.Usermanagement.Domain.DbModels.RefreshToken", b =>
                 {
                     b.HasOne("Pukar.Usermanagement.Domain.DbModels.User", "User")
@@ -116,9 +160,35 @@ namespace Pukar.Usermanagement.Domain.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Pukar.Usermanagement.Domain.DbModels.UserRole", b =>
+                {
+                    b.HasOne("Pukar.Usermanagement.Domain.DbModels.Role", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Pukar.Usermanagement.Domain.DbModels.User", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Pukar.Usermanagement.Domain.DbModels.Role", b =>
+                {
+                    b.Navigation("UserRoles");
+                });
+
             modelBuilder.Entity("Pukar.Usermanagement.Domain.DbModels.User", b =>
                 {
                     b.Navigation("RefreshTokens");
+
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

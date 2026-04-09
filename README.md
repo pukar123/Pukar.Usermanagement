@@ -23,10 +23,11 @@ dotnet build Pukar.Usermanagement.sln
 ## Configuration (host app)
 
 Connection string: `UserManagement` or fallback `DefaultConnection`. JWT section name: `Jwt`.
+For EMS docker development, point `UserManagement` to `EMSDev` on `localhost,1433`.
 
 ```json
 "ConnectionStrings": {
-  "UserManagement": "Server=...;Database=...;Trusted_Connection=True;TrustServerCertificate=True"
+  "UserManagement": "Server=localhost,1433;Database=EMSDev;User Id=sa;Password=Dev123!@#Strong;TrustServerCertificate=True"
 },
 "Jwt": {
   "Issuer": "your-app",
@@ -34,6 +35,12 @@ Connection string: `UserManagement` or fallback `DefaultConnection`. JWT section
   "SigningKey": "REPLACE_WITH_AT_LEAST_32_CHARACTERS!!",
   "AccessTokenExpirationMinutes": 15,
   "RefreshTokenExpirationDays": 7
+},
+"UserManagementBootstrapAdmin": {
+  "EnableSeeding": true,
+  "Email": "admin@ems.local",
+  "Password": "Admin@123456",
+  "UserName": "admin"
 }
 ```
 
@@ -43,7 +50,13 @@ Connection string: `UserManagement` or fallback `DefaultConnection`. JWT section
 dotnet ef database update --project Pukar.Usermanagement.Domain --startup-project Pukar.Usermanagement.Infrastructure --context UserManagementDbContext
 ```
 
-If the design-time factory uses a different SQL instance than your host (see `UserManagementDbContextFactory`), pass the **same** connection string the app uses:
+Set the same connection string for EF CLI to avoid localdb drift:
+
+```powershell
+$env:UM_CONNECTION="Server=localhost,1433;Database=EMSDev;User Id=sa;Password=Dev123!@#Strong;TrustServerCertificate=True"
+```
+
+You can also pass it directly with `--connection`:
 
 ```bash
 dotnet ef database update --project Pukar.Usermanagement.Domain --startup-project Pukar.Usermanagement.Infrastructure --context UserManagementDbContext --connection "Server=...;Database=...;"

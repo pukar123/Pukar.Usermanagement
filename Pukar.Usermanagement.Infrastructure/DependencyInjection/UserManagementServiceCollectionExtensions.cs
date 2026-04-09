@@ -1,12 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Pukar.Usermanagement.Application.Options;
+using Pukar.Usermanagement.Application.Services.Admin;
 using Pukar.Usermanagement.Application.Services.Auth;
 using Pukar.Usermanagement.Application.Services.Jwt;
 using Pukar.Usermanagement.Application.Services.Password;
 using Pukar.Usermanagement.Domain.Database;
 using Pukar.Usermanagement.Domain.Repositories.Interface;
+using Pukar.Usermanagement.Infrastructure.Initialization;
 using Pukar.Usermanagement.Infrastructure.Repositories;
 using Pukar.Usermanagement.Infrastructure.Services;
 
@@ -24,6 +27,7 @@ public static class UserManagementServiceCollectionExtensions
         string connectionStringName = "UserManagement")
     {
         services.Configure<JwtTokenOptions>(configuration.GetSection(JwtTokenOptions.SectionName));
+        services.Configure<BootstrapAdminOptions>(configuration.GetSection(BootstrapAdminOptions.SectionName));
 
         var connectionString = configuration.GetConnectionString(connectionStringName)
                                ?? configuration.GetConnectionString("DefaultConnection");
@@ -39,9 +43,13 @@ public static class UserManagementServiceCollectionExtensions
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<IUserRoleRepository, UserRoleRepository>();
         services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IAdminManagementService, AdminManagementService>();
+        services.AddHostedService<UserManagementBootstrapHostedService>();
 
         return services;
     }

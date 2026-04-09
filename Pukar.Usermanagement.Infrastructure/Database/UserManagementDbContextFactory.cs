@@ -11,7 +11,7 @@ public sealed class UserManagementDbContextFactory : IDesignTimeDbContextFactory
     {
         var optionsBuilder = new DbContextOptionsBuilder<UserManagementDbContext>();
         var cs = Environment.GetEnvironmentVariable("UM_CONNECTION")
-                   ?? "Server=(localdb)\\mssqllocaldb;Database=PukarUserManagement;Trusted_Connection=True;TrustServerCertificate=True";
+                   ?? "Server=localhost,1433;Database=EMSDev;User Id=sa;Password=Dev123!@#Strong;TrustServerCertificate=True";
         optionsBuilder.UseSqlServer(cs, sql =>
             sql.MigrationsAssembly(typeof(UserManagementDbContext).Assembly.GetName().Name!));
         return new UserManagementDbContext(optionsBuilder.Options);

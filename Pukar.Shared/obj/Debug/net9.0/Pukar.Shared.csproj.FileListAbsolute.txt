@@ -1,0 +1,12 @@
+C:\MyProject\Pukar.Usermanagement\Pukar.Shared\bin\Debug\net9.0\Pukar.Shared.deps.json
+C:\MyProject\Pukar.Usermanagement\Pukar.Shared\bin\Debug\net9.0\Pukar.Shared.dll
+C:\MyProject\Pukar.Usermanagement\Pukar.Shared\bin\Debug\net9.0\Pukar.Shared.pdb
+C:\MyProject\Pukar.Usermanagement\Pukar.Shared\obj\Debug\net9.0\Pukar.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\MyProject\Pukar.Usermanagement\Pukar.Shared\obj\Debug\net9.0\Pukar.Shared.AssemblyInfoInputs.cache
+C:\MyProject\Pukar.Usermanagement\Pukar.Shared\obj\Debug\net9.0\Pukar.Shared.AssemblyInfo.cs
+C:\MyProject\Pukar.Usermanagement\Pukar.Shared\obj\Debug\net9.0\Pukar.Shared.csproj.CoreCompileInputs.cache
+C:\MyProject\Pukar.Usermanagement\Pukar.Shared\obj\Debug\net9.0\Pukar.Shared.sourcelink.json
+C:\MyProject\Pukar.Usermanagement\Pukar.Shared\obj\Debug\net9.0\Pukar.Shared.dll
+C:\MyProject\Pukar.Usermanagement\Pukar.Shared\obj\Debug\net9.0\refint\Pukar.Shared.dll
+C:\MyProject\Pukar.Usermanagement\Pukar.Shared\obj\Debug\net9.0\Pukar.Shared.pdb
+C:\MyProject\Pukar.Usermanagement\Pukar.Shared\obj\Debug\net9.0\ref\Pukar.Shared.dll

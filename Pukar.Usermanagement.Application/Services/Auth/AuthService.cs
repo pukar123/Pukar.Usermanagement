@@ -13,6 +13,7 @@ namespace Pukar.Usermanagement.Application.Services.Auth;
 public sealed class AuthService : IAuthService
 {
     private readonly IUserRepository _users;
+    private readonly IUserRoleRepository _userRoles;
     private readonly IRefreshTokenRepository _refreshTokens;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IJwtTokenService _jwt;
@@ -20,12 +21,14 @@ public sealed class AuthService : IAuthService
 
     public AuthService(
         IUserRepository users,
+        IUserRoleRepository userRoles,
         IRefreshTokenRepository refreshTokens,
         IPasswordHasher passwordHasher,
         IJwtTokenService jwt,
         IOptions<JwtTokenOptions> jwtOptions)
     {
         _users = users;
+        _userRoles = userRoles;
         _refreshTokens = refreshTokens;
         _passwordHasher = passwordHasher;
         _jwt = jwt;
@@ -132,7 +135,8 @@ public sealed class AuthService : IAuthService
         DateTime utcNow,
         CancellationToken cancellationToken)
     {
-        var accessToken = _jwt.CreateAccessToken(user.Id, user.Email, user.UserName, utcNow, out var accessExpires);
+        var roles = await _userRoles.GetRoleNamesByUserIdAsync(user.Id, cancellationToken);
+        var accessToken = _jwt.CreateAccessToken(user.Id, user.Email, user.UserName, roles, utcNow, out var accessExpires);
 
         var plainRefresh = RefreshTokenCrypto.GenerateOpaqueToken();
         var refreshHash = RefreshTokenCrypto.HashToken(plainRefresh);

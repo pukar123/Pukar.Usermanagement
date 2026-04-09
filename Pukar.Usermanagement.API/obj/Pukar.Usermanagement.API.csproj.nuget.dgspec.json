@@ -1,17 +1,83 @@
 {
   "format": 1,
   "restore": {
-    "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.API\\Pukar.Usermanagement.API.csproj": {}
+    "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.API\\Pukar.Usermanagement.API.csproj": {}
   },
   "projects": {
-    "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.API\\Pukar.Usermanagement.API.csproj": {
+    "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Shared\\Pukar.Shared.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.API\\Pukar.Usermanagement.API.csproj",
-        "projectName": "Pukar.Usermanagement.API",
-        "projectPath": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.API\\Pukar.Usermanagement.API.csproj",
+        "projectUniqueName": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Shared\\Pukar.Shared.csproj",
+        "projectName": "Pukar.Shared",
+        "projectPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Shared\\Pukar.Shared.csproj",
         "packagesPath": "C:\\Users\\pukar\\.nuget\\packages\\",
-        "outputPath": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.API\\obj\\",
+        "outputPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Shared\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\pukar\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.API\\Pukar.Usermanagement.API.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.API\\Pukar.Usermanagement.API.csproj",
+        "projectName": "Pukar.Usermanagement.API",
+        "projectPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.API\\Pukar.Usermanagement.API.csproj",
+        "packagesPath": "C:\\Users\\pukar\\.nuget\\packages\\",
+        "outputPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -33,11 +99,14 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Application\\Pukar.Usermanagement.Application.csproj": {
-                "projectPath": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Application\\Pukar.Usermanagement.Application.csproj"
+              "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Shared\\Pukar.Shared.csproj": {
+                "projectPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Shared\\Pukar.Shared.csproj"
               },
-              "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Infrastructure\\Pukar.Usermanagement.Infrastructure.csproj": {
-                "projectPath": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Infrastructure\\Pukar.Usermanagement.Infrastructure.csproj"
+              "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Application\\Pukar.Usermanagement.Application.csproj": {
+                "projectPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Application\\Pukar.Usermanagement.Application.csproj"
+              },
+              "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Infrastructure\\Pukar.Usermanagement.Infrastructure.csproj": {
+                "projectPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Infrastructure\\Pukar.Usermanagement.Infrastructure.csproj"
               }
             }
           }
@@ -86,14 +155,14 @@
         }
       }
     },
-    "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Application\\Pukar.Usermanagement.Application.csproj": {
+    "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Application\\Pukar.Usermanagement.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Application\\Pukar.Usermanagement.Application.csproj",
+        "projectUniqueName": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Application\\Pukar.Usermanagement.Application.csproj",
         "projectName": "Pukar.Usermanagement.Application",
-        "projectPath": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Application\\Pukar.Usermanagement.Application.csproj",
+        "projectPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Application\\Pukar.Usermanagement.Application.csproj",
         "packagesPath": "C:\\Users\\pukar\\.nuget\\packages\\",
-        "outputPath": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Application\\obj\\",
+        "outputPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -115,8 +184,11 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj": {
-                "projectPath": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj"
+              "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Shared\\Pukar.Shared.csproj": {
+                "projectPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Shared\\Pukar.Shared.csproj"
+              },
+              "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj": {
+                "projectPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj"
               }
             }
           }
@@ -162,14 +234,14 @@
         }
       }
     },
-    "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj": {
+    "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj",
+        "projectUniqueName": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj",
         "projectName": "Pukar.Usermanagement.Domain",
-        "projectPath": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj",
+        "projectPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj",
         "packagesPath": "C:\\Users\\pukar\\.nuget\\packages\\",
-        "outputPath": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\obj\\",
+        "outputPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -190,7 +262,11 @@
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Shared\\Pukar.Shared.csproj": {
+                "projectPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Shared\\Pukar.Shared.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -248,14 +324,14 @@
         }
       }
     },
-    "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Infrastructure\\Pukar.Usermanagement.Infrastructure.csproj": {
+    "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Infrastructure\\Pukar.Usermanagement.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Infrastructure\\Pukar.Usermanagement.Infrastructure.csproj",
+        "projectUniqueName": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Infrastructure\\Pukar.Usermanagement.Infrastructure.csproj",
         "projectName": "Pukar.Usermanagement.Infrastructure",
-        "projectPath": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Infrastructure\\Pukar.Usermanagement.Infrastructure.csproj",
+        "projectPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Infrastructure\\Pukar.Usermanagement.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\pukar\\.nuget\\packages\\",
-        "outputPath": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Infrastructure\\obj\\",
+        "outputPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -277,11 +353,11 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Application\\Pukar.Usermanagement.Application.csproj": {
-                "projectPath": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Application\\Pukar.Usermanagement.Application.csproj"
+              "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Application\\Pukar.Usermanagement.Application.csproj": {
+                "projectPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Application\\Pukar.Usermanagement.Application.csproj"
               },
-              "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj": {
-                "projectPath": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj"
+              "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj": {
+                "projectPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj"
               }
             }
           }
@@ -317,6 +393,10 @@
               "version": "[9.0.4, )"
             },
             "Microsoft.Extensions.Configuration.Json": {
+              "target": "Package",
+              "version": "[9.0.4, )"
+            },
+            "Microsoft.Extensions.Hosting.Abstractions": {
               "target": "Package",
               "version": "[9.0.4, )"
             },

@@ -785,6 +785,26 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
+      "Microsoft.Extensions.Diagnostics.Abstractions/9.0.4": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.4",
+          "Microsoft.Extensions.Options": "9.0.4"
+        },
+        "compile": {
+          "lib/net9.0/Microsoft.Extensions.Diagnostics.Abstractions.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.Extensions.Diagnostics.Abstractions.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net8.0/_._": {}
+        }
+      },
       "Microsoft.Extensions.FileProviders.Abstractions/9.0.4": {
         "type": "package",
         "dependencies": {
@@ -834,6 +854,29 @@
         },
         "runtime": {
           "lib/net9.0/Microsoft.Extensions.FileSystemGlobbing.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net8.0/_._": {}
+        }
+      },
+      "Microsoft.Extensions.Hosting.Abstractions/9.0.4": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "9.0.4",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.4",
+          "Microsoft.Extensions.Diagnostics.Abstractions": "9.0.4",
+          "Microsoft.Extensions.FileProviders.Abstractions": "9.0.4",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.4"
+        },
+        "compile": {
+          "lib/net9.0/Microsoft.Extensions.Hosting.Abstractions.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.Extensions.Hosting.Abstractions.dll": {
             "related": ".xml"
           }
         },
@@ -1713,11 +1756,22 @@
           }
         }
       },
+      "Pukar.Shared/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "compile": {
+          "bin/placeholder/Pukar.Shared.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Pukar.Shared.dll": {}
+        }
+      },
       "Pukar.Usermanagement.Application/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
           "Microsoft.Extensions.Options": "9.0.4",
+          "Pukar.Shared": "1.0.0",
           "Pukar.Usermanagement.Domain": "1.0.0"
         },
         "compile": {
@@ -1733,7 +1787,8 @@
         "dependencies": {
           "Microsoft.EntityFrameworkCore": "9.0.4",
           "Microsoft.EntityFrameworkCore.Relational": "9.0.4",
-          "Microsoft.EntityFrameworkCore.SqlServer": "9.0.4"
+          "Microsoft.EntityFrameworkCore.SqlServer": "9.0.4",
+          "Pukar.Shared": "1.0.0"
         },
         "compile": {
           "bin/placeholder/Pukar.Usermanagement.Domain.dll": {}
@@ -3279,6 +3334,33 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "Microsoft.Extensions.Diagnostics.Abstractions/9.0.4": {
+      "sha512": "IAucBcHYtiCmMyFag+Vrp5m+cjGRlDttJk9Vx7Dqpq+Ama4BzVUOk0JARQakgFFr7ZTBSgLKlHmtY5MiItB7Cg==",
+      "type": "package",
+      "path": "microsoft.extensions.diagnostics.abstractions/9.0.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/Microsoft.Extensions.Diagnostics.Abstractions.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net8.0/_._",
+        "buildTransitive/netcoreapp2.0/Microsoft.Extensions.Diagnostics.Abstractions.targets",
+        "lib/net462/Microsoft.Extensions.Diagnostics.Abstractions.dll",
+        "lib/net462/Microsoft.Extensions.Diagnostics.Abstractions.xml",
+        "lib/net8.0/Microsoft.Extensions.Diagnostics.Abstractions.dll",
+        "lib/net8.0/Microsoft.Extensions.Diagnostics.Abstractions.xml",
+        "lib/net9.0/Microsoft.Extensions.Diagnostics.Abstractions.dll",
+        "lib/net9.0/Microsoft.Extensions.Diagnostics.Abstractions.xml",
+        "lib/netstandard2.0/Microsoft.Extensions.Diagnostics.Abstractions.dll",
+        "lib/netstandard2.0/Microsoft.Extensions.Diagnostics.Abstractions.xml",
+        "microsoft.extensions.diagnostics.abstractions.9.0.4.nupkg.sha512",
+        "microsoft.extensions.diagnostics.abstractions.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
     "Microsoft.Extensions.FileProviders.Abstractions/9.0.4": {
       "sha512": "gQN2o/KnBfVk6Bd71E2YsvO5lsqrqHmaepDGk+FB/C4aiQY9B0XKKNKfl5/TqcNOs9OEithm4opiMHAErMFyEw==",
       "type": "package",
@@ -3360,6 +3442,36 @@
         "lib/netstandard2.0/Microsoft.Extensions.FileSystemGlobbing.xml",
         "microsoft.extensions.filesystemglobbing.9.0.4.nupkg.sha512",
         "microsoft.extensions.filesystemglobbing.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "Microsoft.Extensions.Hosting.Abstractions/9.0.4": {
+      "sha512": "bXkwRPMo4x19YKH6/V9XotU7KYQJlihXhcWO1RDclAY3yfY3XNg4QtSEBvng4kK/DnboE0O/nwSl+6Jiv9P+FA==",
+      "type": "package",
+      "path": "microsoft.extensions.hosting.abstractions/9.0.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/Microsoft.Extensions.Hosting.Abstractions.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net8.0/_._",
+        "buildTransitive/netcoreapp2.0/Microsoft.Extensions.Hosting.Abstractions.targets",
+        "lib/net462/Microsoft.Extensions.Hosting.Abstractions.dll",
+        "lib/net462/Microsoft.Extensions.Hosting.Abstractions.xml",
+        "lib/net8.0/Microsoft.Extensions.Hosting.Abstractions.dll",
+        "lib/net8.0/Microsoft.Extensions.Hosting.Abstractions.xml",
+        "lib/net9.0/Microsoft.Extensions.Hosting.Abstractions.dll",
+        "lib/net9.0/Microsoft.Extensions.Hosting.Abstractions.xml",
+        "lib/netstandard2.0/Microsoft.Extensions.Hosting.Abstractions.dll",
+        "lib/netstandard2.0/Microsoft.Extensions.Hosting.Abstractions.xml",
+        "lib/netstandard2.1/Microsoft.Extensions.Hosting.Abstractions.dll",
+        "lib/netstandard2.1/Microsoft.Extensions.Hosting.Abstractions.xml",
+        "microsoft.extensions.hosting.abstractions.9.0.4.nupkg.sha512",
+        "microsoft.extensions.hosting.abstractions.nuspec",
         "useSharedDesignerContext.txt"
       ]
     },
@@ -4835,6 +4947,11 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "Pukar.Shared/1.0.0": {
+      "type": "project",
+      "path": "../Pukar.Shared/Pukar.Shared.csproj",
+      "msbuildProject": "../Pukar.Shared/Pukar.Shared.csproj"
+    },
     "Pukar.Usermanagement.Application/1.0.0": {
       "type": "project",
       "path": "../Pukar.Usermanagement.Application/Pukar.Usermanagement.Application.csproj",
@@ -4852,6 +4969,7 @@
       "Microsoft.EntityFrameworkCore.Design >= 9.0.4",
       "Microsoft.EntityFrameworkCore.SqlServer >= 9.0.4",
       "Microsoft.Extensions.Configuration.Json >= 9.0.4",
+      "Microsoft.Extensions.Hosting.Abstractions >= 9.0.4",
       "Microsoft.Extensions.Options.ConfigurationExtensions >= 9.0.4",
       "Pukar.Usermanagement.Application >= 1.0.0",
       "Pukar.Usermanagement.Domain >= 1.0.0",
@@ -4865,11 +4983,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Infrastructure\\Pukar.Usermanagement.Infrastructure.csproj",
+      "projectUniqueName": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Infrastructure\\Pukar.Usermanagement.Infrastructure.csproj",
       "projectName": "Pukar.Usermanagement.Infrastructure",
-      "projectPath": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Infrastructure\\Pukar.Usermanagement.Infrastructure.csproj",
+      "projectPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Infrastructure\\Pukar.Usermanagement.Infrastructure.csproj",
       "packagesPath": "C:\\Users\\pukar\\.nuget\\packages\\",
-      "outputPath": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Infrastructure\\obj\\",
+      "outputPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Infrastructure\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -4891,11 +5009,11 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Application\\Pukar.Usermanagement.Application.csproj": {
-              "projectPath": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Application\\Pukar.Usermanagement.Application.csproj"
+            "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Application\\Pukar.Usermanagement.Application.csproj": {
+              "projectPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Application\\Pukar.Usermanagement.Application.csproj"
             },
-            "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj": {
-              "projectPath": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj"
+            "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj": {
+              "projectPath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj"
             }
           }
         }
@@ -4931,6 +5049,10 @@
             "version": "[9.0.4, )"
           },
           "Microsoft.Extensions.Configuration.Json": {
+            "target": "Package",
+            "version": "[9.0.4, )"
+          },
+          "Microsoft.Extensions.Hosting.Abstractions": {
             "target": "Package",
             "version": "[9.0.4, )"
           },
