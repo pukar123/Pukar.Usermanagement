@@ -2,6 +2,7 @@
 # Run: docker compose up -d --build   OR use start-ems-docker.bat
 #
 # EMS.API runs on the host (dotnet run) and uses localhost:1433 for SQL — same ports as below.
+# Pukar user management uses a dedicated database on that instance: PukarUsers (see ConnectionStrings:UserManagement).
 # Browser loads the web app at http://localhost:3000 and calls the API at NEXT_PUBLIC_API_BASE_URL
 # (default http://localhost:5246). Run API with: dotnet run --project EMS.API --launch-profile http
 #

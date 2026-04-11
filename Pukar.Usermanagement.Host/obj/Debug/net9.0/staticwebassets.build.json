@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "urN+dLWzs3IxudmSOPE5Au6lGGtyVJehlhh0UG5Qcc0=",
+  "Source": "Pukar.Usermanagement.Host",
+  "BasePath": "_content/Pukar.Usermanagement.Host",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Pukar.Usermanagement.Host.props" />
+</Project>

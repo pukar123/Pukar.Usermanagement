@@ -13,6 +13,7 @@ Layered JWT authentication with refresh-token rotation, BCrypt passwords, and SQ
 | `Pukar.Usermanagement.Application` | DTOs, `AuthService`, options |
 | `Pukar.Usermanagement.Infrastructure` | EF repositories, JWT signing, BCrypt, `AddPukarUserManagement` |
 | `Pukar.Usermanagement.API` | `AuthController`, `AddPukarUserManagementApi`, JWT bearer registration |
+| `Pukar.Usermanagement.Host` | Runnable dev host with **Swagger UI** (`dotnet run`); uses database `PukarUsers` on the Docker SQL instance |
 
 ## Build
 
@@ -20,14 +21,24 @@ Layered JWT authentication with refresh-token rotation, BCrypt passwords, and SQ
 dotnet build Pukar.Usermanagement.sln
 ```
 
+## Run locally (Swagger)
+
+Start SQL Server (e.g. `docker compose up -d sqlserver`), then:
+
+```bash
+dotnet run --project Pukar.Usermanagement.Host --launch-profile http
+```
+
+Open **http://localhost:5246/swagger**. Log in via `POST /api/auth/login` (after seeding), click **Authorize**, enter `Bearer {accessToken}`, then call admin endpoints.
+
 ## Configuration (host app)
 
 Connection string: `UserManagement` or fallback `DefaultConnection`. JWT section name: `Jwt`.
-For EMS docker development, point `UserManagement` to `EMSDev` on `localhost,1433`.
+Point `UserManagement` at database **PukarUsers** on the Docker SQL instance (`localhost:1433`).
 
 ```json
 "ConnectionStrings": {
-  "UserManagement": "Server=localhost,1433;Database=EMSDev;User Id=sa;Password=Dev123!@#Strong;TrustServerCertificate=True"
+  "UserManagement": "Server=localhost,1433;Database=PukarUsers;User Id=sa;Password=Dev123!@#Strong;TrustServerCertificate=True"
 },
 "Jwt": {
   "Issuer": "your-app",
@@ -50,17 +61,33 @@ For EMS docker development, point `UserManagement` to `EMSDev` on `localhost,143
 dotnet ef database update --project Pukar.Usermanagement.Domain --startup-project Pukar.Usermanagement.Infrastructure --context UserManagementDbContext
 ```
 
-Set the same connection string for EF CLI to avoid localdb drift:
+Set the same connection string for EF CLI to avoid targeting the wrong database:
 
 ```powershell
-$env:UM_CONNECTION="Server=localhost,1433;Database=EMSDev;User Id=sa;Password=Dev123!@#Strong;TrustServerCertificate=True"
+$env:UM_CONNECTION="Server=localhost,1433;Database=PukarUsers;User Id=sa;Password=Dev123!@#Strong;TrustServerCertificate=True"
 ```
 
 You can also pass it directly with `--connection`:
 
 ```bash
-dotnet ef database update --project Pukar.Usermanagement.Domain --startup-project Pukar.Usermanagement.Infrastructure --context UserManagementDbContext --connection "Server=...;Database=...;"
+dotnet ef database update --project Pukar.Usermanagement.Domain --startup-project Pukar.Usermanagement.Infrastructure --context UserManagementDbContext --connection "Server=...;Database=PukarUsers;..."
 ```
+
+The **Host** project applies pending migrations on startup (`UserManagementBootstrapHostedService`), so a manual `database update` is optional if you run `Pukar.Usermanagement.Host` first.
+
+## Roll back user-management schema from `EMSDev` (optional)
+
+If you previously applied this module’s migrations to **`EMSDev`** and want **full isolation** in `PukarUsers` only, remove only the objects created by `UserManagementDbContext` migrations:
+
+```bash
+dotnet ef database update 0 --project Pukar.Usermanagement.Domain --startup-project Pukar.Usermanagement.Infrastructure --context UserManagementDbContext --connection "Server=localhost,1433;Database=EMSDev;User Id=sa;Password=Dev123!@#Strong;TrustServerCertificate=True"
+```
+
+This runs migration `Down` methods in reverse order (drops `um` tables managed by this module). Other tables in `EMSDev` are not affected.
+
+**Caveats:** If migration history in `EMSDev` was edited manually or is inconsistent, fix it or use a manual SQL cleanup as a last resort (drop `um` tables and clear `um.__EFMigrationsHistory` rows for this context only).
+
+**Manual fallback (last resort):** In SSMS, connected to `EMSDev`, you can drop user-management objects in schema `um` (e.g. `DROP TABLE um.UserRoles;` … `DROP TABLE um.Users;` in dependency order) and remove related rows from `um.__EFMigrationsHistory`. Prefer `database update 0` when history is intact.
 
 ## Hosting integration
 
@@ -71,6 +98,8 @@ builder.Services.AddPukarUserManagementApi(builder.Configuration);
 app.UseAuthentication();
 app.UseAuthorization();
 ```
+
+Point **`ConnectionStrings:UserManagement`** at **`Database=PukarUsers`** (same SQL instance as before) so EMS and other apps do not store user-management data in `EMSDev`.
 
 ## Repository layout (monorepo consumers)
 
