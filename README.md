@@ -87,7 +87,7 @@ This runs migration `Down` methods in reverse order (drops `um` tables managed b
 
 **Caveats:** If migration history in `EMSDev` was edited manually or is inconsistent, fix it or use a manual SQL cleanup as a last resort (drop `um` tables and clear `um.__EFMigrationsHistory` rows for this context only).
 
-**Manual fallback (last resort):** In SSMS, connected to `EMSDev`, you can drop user-management objects in schema `um` (e.g. `DROP TABLE um.UserRoles;` … `DROP TABLE um.Users;` in dependency order) and remove related rows from `um.__EFMigrationsHistory`. Prefer `database update 0` when history is intact.
+**If `um.Users` (or related tables) still appear in `EMSDev`:** run the idempotent script [`scripts/RemovePukarUserManagementFromEMSDev.sql`](scripts/RemovePukarUserManagementFromEMSDev.sql) against `EMSDev` in SSMS or `sqlcmd`. It drops `um` tables in the correct order and removes this module’s rows from `dbo.__EFMigrationsHistory`. Your live data for user management belongs in **`PukarUsers`** only—ensure `ConnectionStrings:UserManagement` uses `Database=PukarUsers`, then start the Host or run `dotnet ef database update` against `PukarUsers`.
 
 ## Hosting integration
 
