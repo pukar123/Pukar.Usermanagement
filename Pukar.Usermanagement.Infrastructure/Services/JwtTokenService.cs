@@ -21,6 +21,7 @@ public sealed class JwtTokenService : IJwtTokenService
         int userId,
         string email,
         string? userName,
+        bool emailConfirmed,
         IReadOnlyCollection<string> roles,
         DateTime utcNow,
         out DateTime accessTokenExpiresAtUtc)
@@ -39,6 +40,7 @@ public sealed class JwtTokenService : IJwtTokenService
             new(JwtRegisteredClaimNames.Sub, userId.ToString()),
             new(JwtRegisteredClaimNames.Email, email),
             new(JwtRegisteredClaimNames.Jti, jti),
+            new("email_verified", emailConfirmed ? "true" : "false"),
         };
 
         if (!string.IsNullOrWhiteSpace(userName))

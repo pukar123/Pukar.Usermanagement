@@ -15,6 +15,9 @@ public sealed class UserManagementBootstrapHostedService : IHostedService
 {
     private const string AdminRoleName = "Admin";
 
+    /// <summary>Default role for self-registered users (see <c>AuthService.RegisterAsync</c>).</summary>
+    private const string UserRoleName = "User";
+
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly IOptions<BootstrapAdminOptions> _bootstrapOptions;
     private readonly ILogger<UserManagementBootstrapHostedService> _logger;
@@ -38,7 +41,8 @@ public sealed class UserManagementBootstrapHostedService : IHostedService
         await db.Database.MigrateAsync(cancellationToken);
 
         var utcNow = DateTime.UtcNow;
-        var adminRole = await EnsureAdminRoleAsync(db, utcNow, cancellationToken);
+        var adminRole = await EnsureRoleExistsAsync(db, AdminRoleName, utcNow, cancellationToken);
+        await EnsureRoleExistsAsync(db, UserRoleName, utcNow, cancellationToken);
 
         var options = _bootstrapOptions.Value;
         if (!options.EnableSeeding)
@@ -62,6 +66,7 @@ public sealed class UserManagementBootstrapHostedService : IHostedService
                 UserName = string.IsNullOrWhiteSpace(options.UserName) ? null : options.UserName.Trim(),
                 IsActive = true,
                 CreatedAtUtc = utcNow,
+                EmailConfirmed = true,
             };
             db.Users.Add(user);
             await db.SaveChangesAsync(cancellationToken);
@@ -87,16 +92,20 @@ public sealed class UserManagementBootstrapHostedService : IHostedService
         return Task.CompletedTask;
     }
 
-    private static async Task<Role> EnsureAdminRoleAsync(UserManagementDbContext db, DateTime utcNow, CancellationToken cancellationToken)
+    private static async Task<Role> EnsureRoleExistsAsync(
+        UserManagementDbContext db,
+        string roleName,
+        DateTime utcNow,
+        CancellationToken cancellationToken)
     {
-        var normalizedRoleName = AdminRoleName.ToUpperInvariant();
+        var normalizedRoleName = roleName.ToUpperInvariant();
         var role = await db.Roles.FirstOrDefaultAsync(r => r.NormalizedName == normalizedRoleName, cancellationToken);
         if (role is not null)
             return role;
 
         role = new Role
         {
-            Name = AdminRoleName,
+            Name = roleName,
             NormalizedName = normalizedRoleName,
             CreatedAtUtc = utcNow,
         };

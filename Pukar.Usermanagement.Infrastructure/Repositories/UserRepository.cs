@@ -17,4 +17,10 @@ public sealed class UserRepository : BaseRepository<User>, IUserRepository
         return await Context.Set<User>()
             .FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail, cancellationToken);
     }
+
+    public async Task<User?> GetByEmailConfirmationTokenHashAsync(string tokenHash, CancellationToken cancellationToken = default)
+    {
+        return await Context.Set<User>()
+            .FirstOrDefaultAsync(u => u.EmailConfirmationTokenHash == tokenHash, cancellationToken);
+    }
 }

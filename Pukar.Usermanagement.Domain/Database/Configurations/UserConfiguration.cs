@@ -21,6 +21,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(e => e.CreatedAtUtc).IsRequired();
 
+        builder.Property(e => e.EmailConfirmed).IsRequired();
+        builder.Property(e => e.EmailConfirmationTokenHash).HasMaxLength(128);
+        builder.HasIndex(e => e.EmailConfirmationTokenHash)
+            .IsUnique()
+            .HasFilter("[EmailConfirmationTokenHash] IS NOT NULL");
+
         builder.HasMany(e => e.RefreshTokens)
             .WithOne(e => e.User)
             .HasForeignKey(e => e.UserId)

@@ -106,6 +106,16 @@ namespace Pukar.Usermanagement.Domain.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<DateTime?>("EmailConfirmationExpiresAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EmailConfirmationTokenHash")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -127,6 +137,10 @@ namespace Pukar.Usermanagement.Domain.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EmailConfirmationTokenHash")
+                        .IsUnique()
+                        .HasFilter("[EmailConfirmationTokenHash] IS NOT NULL");
 
                     b.HasIndex("NormalizedEmail")
                         .IsUnique();

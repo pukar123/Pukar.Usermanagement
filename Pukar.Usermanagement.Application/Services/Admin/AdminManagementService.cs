@@ -64,6 +64,7 @@ public sealed class AdminManagementService : IAdminManagementService
             UserName = string.IsNullOrWhiteSpace(request.UserName) ? null : request.UserName.Trim(),
             IsActive = request.IsActive,
             CreatedAtUtc = DateTime.UtcNow,
+            EmailConfirmed = true,
         };
 
         await _users.AddAsync(user, cancellationToken);

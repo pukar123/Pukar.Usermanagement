@@ -1,0 +1,32 @@
+---
+description: Next.js (App Router) structure and TS/React naming for clients consuming this API (e.g. ems-web in EMS monorepo)
+globs: "**/ems-web/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# Web client conventions (Next.js) — EMS / shared frontends
+
+When a Next.js app (such as **`ems-web`** under `EmployeeManagementSystem`) calls **Pukar.Usermanagement** APIs, follow the EMS web rules below.
+
+## Layout
+
+- **App Router**: `ems-web/src/app/` — `layout.tsx`, `page.tsx`, route segments per URL.
+- **Features** (bounded context): `ems-web/src/features/{area}/` — `components/`, `hooks/`, `services/`, `types/` (and similar) as needed.
+- **Shared**: `ems-web/src/shared/` — `api/` (HTTP client), `components/`, `utils/`.
+- **Providers**: `ems-web/src/providers/` — e.g. React Query provider.
+
+## React and TypeScript
+
+- **Components**: **PascalCase** names; files **`PascalCase.tsx`** for components.
+- **Hooks**: prefix **`use`**, file **`use{Thing}.ts`**.
+- **Services / API**: **`camelCase.ts`** for modules.
+- **Types**: align with API **camelCase** JSON property names (`confirmPassword`, `requiresEmailConfirmation`, …).
+
+## API client
+
+- Base URL: **`NEXT_PUBLIC_API_BASE_URL`** in `.env.local` (no trailing slash).
+- Auth flows: `POST /api/auth/register`, `POST /api/auth/confirm-email`, `POST /api/auth/resend-confirmation`, `POST /api/auth/login`, etc.
+
+## Imports
+
+- Use path alias **`@/`** (see host `tsconfig`) for `src/` imports.

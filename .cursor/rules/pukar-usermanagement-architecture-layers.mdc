@@ -1,0 +1,49 @@
+---
+description: Pukar User Management layered architecture — project roles, dependencies, DTO and service layout
+alwaysApply: true
+---
+
+# Pukar.Usermanagement architecture (layers)
+
+Follow the same boundaries as **EMS** (see `EmployeeManagementSystem` repo: `docs/ARCHITECTURE_AND_PATTERNS.md`, `docs/architecture.md` when present). This solution applies that pattern to user-management concerns.
+
+## Projects
+
+| Project | Responsibility |
+|---------|----------------|
+| **Pukar.Usermanagement.Domain** | Entities (`DbModels`), EF `UserManagementDbContext`, entity configurations, migrations, repository interfaces (`IUserRepository`, etc.). |
+| **Pukar.Usermanagement.Application** | DTOs per area (`DTOs/Auth`, `DTOs/Admin`), application services (`Services/Auth`, `Services/Admin`, …), options, helpers. **No** EF or concrete infrastructure. |
+| **Pukar.Usermanagement.Infrastructure** | `BaseRepository<T>`, EF implementations, JWT/password/email adapter implementations, `UserManagementDbContextFactory`, bootstrap hosted services. |
+| **Pukar.Usermanagement.API** | ASP.NET Core integration: controllers, extension methods (`UserManagementApiExtensions`). **No** direct `DbContext` or EF usage in controllers. |
+| **Pukar.Shared** | Cross-cutting helpers and exceptions (`BusinessRuleException`, `EmailNormalizer`, …). |
+
+## Dependency direction
+
+- **API** references **Application** and **Infrastructure** (via extension methods / DI registration).
+- **Application** uses **Domain** abstractions only; it **must not** reference **Infrastructure**.
+- **Infrastructure** implements Domain interfaces and references **Domain** + EF Core.
+
+## Request flow
+
+Controllers call **application services** only. Services use **repositories** (`I*Repository`) to persist; **Infrastructure** implements repositories.
+
+## DTOs (Application)
+
+- Location: `Pukar.Usermanagement.Application/DTOs/{Area}/`.
+- Naming: `Create*RequestModel`, `*ResponseModel`, auth models (`RegisterRequestModel`, `AuthResponseModel`, …).
+- **Flat** shapes: scalars; **no** navigation properties on DTOs.
+- Namespaces: `Pukar.Usermanagement.Application.DTOs.{Area}` matching folder names.
+
+## Services
+
+- Interface: `I{Area}Service` in `Application/Services/{Area}/`.
+- Implementation: `{Area}Service` in the same folder (e.g. `AuthService`).
+
+## Outbound email
+
+- Abstraction: `IEmailSender` in **Application** (`Services/Email/`).
+- Implementation (e.g. `LoggingEmailSender`) in **Infrastructure**; hosts may replace with SMTP or a provider.
+
+## DI
+
+Register persistence, auth, email, and hosted bootstrap in `AddPukarUserManagement` (`Infrastructure/DependencyInjection/UserManagementServiceCollectionExtensions.cs`). JWT bearer registration remains in `AddPukarUserManagementApi` (API project).

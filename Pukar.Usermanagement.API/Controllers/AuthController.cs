@@ -20,10 +20,10 @@ public class AuthController : ControllerBase
 
     [HttpPost("register")]
     [AllowAnonymous]
-    [ProducesResponseType(typeof(AuthResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RegisterResponseModel), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<AuthResponseModel>> Register(
+    public async Task<ActionResult<RegisterResponseModel>> Register(
         [FromBody] RegisterRequestModel request,
         CancellationToken cancellationToken)
     {
@@ -40,6 +40,36 @@ public class AuthController : ControllerBase
         {
             return BadRequest(new { message = ex.Message });
         }
+    }
+
+    [HttpPost("confirm-email")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(AuthResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<AuthResponseModel>> ConfirmEmail(
+        [FromBody] ConfirmEmailRequestModel request,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _auth.ConfirmEmailAsync(request, ClientInfo(), cancellationToken);
+            return Ok(result);
+        }
+        catch (BusinessRuleException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("resend-confirmation")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> ResendConfirmation(
+        [FromBody] ResendConfirmationRequestModel request,
+        CancellationToken cancellationToken)
+    {
+        await _auth.ResendConfirmationEmailAsync(request, cancellationToken);
+        return NoContent();
     }
 
     [HttpPost("login")]

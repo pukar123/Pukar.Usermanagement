@@ -1,0 +1,42 @@
+---
+description: C# / .NET naming and file conventions for Pukar.Usermanagement backend projects
+globs: "**/*.{cs,csproj,sln}"
+alwaysApply: false
+---
+
+# Pukar.Usermanagement C# and project naming
+
+Applies to **Pukar.Usermanagement.Domain**, **Application**, **Infrastructure**, **API**, and **Pukar.Shared** where shared with this solution.
+
+## Assemblies and solution
+
+- Project names: `Pukar.Usermanagement.{Domain,Application,Infrastructure,API}` — **PascalCase**, **`Pukar.Usermanagement.`** prefix for vertical slice assemblies.
+- Solution file: `Pukar.Usermanagement.sln`.
+
+## Types and members
+
+- **Public** types, methods, properties: **PascalCase** (`AuthService`, `RegisterAsync`).
+- **Interfaces**: prefix **`I`** (`IAuthService`, `IBaseRepository<T>`).
+- **Async** methods that perform I/O: suffix **`Async`**, return `Task` / `Task<T>`.
+- **Parameters and locals**: **camelCase** (`cancellationToken`, `userId`).
+- **Private fields** (when used): leading underscore `_camelCase` (match existing files).
+
+## DTOs and API models
+
+- Request/response models: **`RegisterRequestModel`**, **`AuthResponseModel`**, **`CreateUserRequestModel`**, etc.
+- **API controllers** bind **Application** DTOs; avoid duplicating HTTP-only types unless the contract intentionally diverges.
+
+## Controllers
+
+- Class name: **`AuthController`**, **`AdminController`** (resource-oriented, plural or area name as already established).
+- Routes: explicit `[Route("api/...")]` per controller.
+- Actions: names that reflect HTTP semantics; delegate to application services only.
+
+## Domain and shared
+
+- Exceptions: **`BusinessRuleException`**, **`DuplicateEmailException`** in **Pukar.Shared** (or domain helpers as used in this repo).
+- Static helpers: **`EmailNormalizer`**, **`RefreshTokenCrypto`**, **`PasswordPolicy`** pattern for cross-cutting rules.
+
+## Files
+
+- One primary **public** type per file; **file name** matches the type name (C# convention).

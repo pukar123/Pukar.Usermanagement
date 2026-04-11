@@ -6,6 +6,7 @@ public interface IJwtTokenService
         int userId,
         string email,
         string? userName,
+        bool emailConfirmed,
         IReadOnlyCollection<string> roles,
         DateTime utcNow,
         out DateTime accessTokenExpiresAtUtc);

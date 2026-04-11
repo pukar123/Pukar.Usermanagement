@@ -20,6 +20,13 @@ public class User
 
     public DateTime? LastLoginAtUtc { get; set; }
 
+    public bool EmailConfirmed { get; set; }
+
+    /// <summary>SHA-256 hex of the opaque email confirmation token (when pending).</summary>
+    public string? EmailConfirmationTokenHash { get; set; }
+
+    public DateTime? EmailConfirmationExpiresAtUtc { get; set; }
+
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();

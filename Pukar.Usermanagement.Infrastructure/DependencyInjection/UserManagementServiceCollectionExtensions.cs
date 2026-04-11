@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Pukar.Usermanagement.Application.Options;
 using Pukar.Usermanagement.Application.Services.Admin;
 using Pukar.Usermanagement.Application.Services.Auth;
+using Pukar.Usermanagement.Application.Services.Email;
 using Pukar.Usermanagement.Application.Services.Jwt;
 using Pukar.Usermanagement.Application.Services.Password;
 using Pukar.Usermanagement.Domain.Database;
@@ -28,6 +29,8 @@ public static class UserManagementServiceCollectionExtensions
     {
         services.Configure<JwtTokenOptions>(configuration.GetSection(JwtTokenOptions.SectionName));
         services.Configure<BootstrapAdminOptions>(configuration.GetSection(BootstrapAdminOptions.SectionName));
+        services.Configure<RegistrationOptions>(configuration.GetSection(RegistrationOptions.SectionName));
+        services.Configure<EmailOptions>(configuration.GetSection(EmailOptions.SectionName));
 
         var connectionString = configuration.GetConnectionString(connectionStringName)
                                ?? configuration.GetConnectionString("DefaultConnection");
@@ -49,6 +52,7 @@ public static class UserManagementServiceCollectionExtensions
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IAdminManagementService, AdminManagementService>();
+        services.AddScoped<IEmailSender, LoggingEmailSender>();
         services.AddHostedService<UserManagementBootstrapHostedService>();
 
         return services;

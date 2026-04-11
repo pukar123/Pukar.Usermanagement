@@ -4,7 +4,11 @@ namespace Pukar.Usermanagement.Application.Services.Auth;
 
 public interface IAuthService
 {
-    Task<AuthResponseModel> RegisterAsync(RegisterRequestModel request, string? clientInfo, CancellationToken cancellationToken = default);
+    Task<RegisterResponseModel> RegisterAsync(RegisterRequestModel request, string? clientInfo, CancellationToken cancellationToken = default);
+
+    Task<AuthResponseModel> ConfirmEmailAsync(ConfirmEmailRequestModel request, string? clientInfo, CancellationToken cancellationToken = default);
+
+    Task ResendConfirmationEmailAsync(ResendConfirmationRequestModel request, CancellationToken cancellationToken = default);
 
     Task<AuthResponseModel> LoginAsync(LoginRequestModel request, string? clientInfo, CancellationToken cancellationToken = default);
 
