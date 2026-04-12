@@ -9,4 +9,12 @@ public class AdminUserResponseModel
     public string? UserName { get; set; }
 
     public bool IsActive { get; set; }
+
+    public bool EmailConfirmed { get; set; }
+
+    public DateTime CreatedAtUtc { get; set; }
+
+    public DateTime? LastLoginAtUtc { get; set; }
+
+    public IReadOnlyList<string> Roles { get; set; } = Array.Empty<string>();
 }

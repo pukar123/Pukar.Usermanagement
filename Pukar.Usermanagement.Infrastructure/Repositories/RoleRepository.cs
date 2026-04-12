@@ -17,4 +17,11 @@ public sealed class RoleRepository : BaseRepository<Role>, IRoleRepository
         return await Context.Set<Role>()
             .FirstOrDefaultAsync(r => r.NormalizedName == normalizedRoleName, cancellationToken);
     }
+
+    public async Task<IReadOnlyList<Role>> GetAllOrderedByNameAsync(CancellationToken cancellationToken = default)
+    {
+        return await Context.Set<Role>()
+            .OrderBy(r => r.Name)
+            .ToListAsync(cancellationToken);
+    }
 }

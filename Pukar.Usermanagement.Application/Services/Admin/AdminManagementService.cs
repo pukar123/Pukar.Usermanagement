@@ -8,6 +8,8 @@ namespace Pukar.Usermanagement.Application.Services.Admin;
 
 public sealed class AdminManagementService : IAdminManagementService
 {
+    private const string ProtectedAdminRoleNormalizedName = "ADMIN";
+
     private readonly IUserRepository _users;
     private readonly IRoleRepository _roles;
     private readonly IUserRoleRepository _userRoles;
@@ -47,6 +49,30 @@ public sealed class AdminManagementService : IAdminManagementService
         return roleName;
     }
 
+    public async Task<IReadOnlyList<RoleResponseModel>> ListRolesAsync(CancellationToken cancellationToken = default)
+    {
+        var roles = await _roles.GetAllOrderedByNameAsync(cancellationToken);
+        return roles.Select(r => new RoleResponseModel
+        {
+            Id = r.Id,
+            Name = r.Name,
+            CreatedAtUtc = r.CreatedAtUtc,
+        }).ToList();
+    }
+
+    public async Task DeleteRoleAsync(int roleId, CancellationToken cancellationToken = default)
+    {
+        var role = await _roles.GetByIdAsync(roleId, cancellationToken);
+        if (role is null)
+            throw new BusinessRuleException("Role not found.");
+
+        if (string.Equals(role.NormalizedName, ProtectedAdminRoleNormalizedName, StringComparison.Ordinal))
+            throw new BusinessRuleException("The Admin role cannot be deleted.");
+
+        _roles.Remove(role);
+        await _roles.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task<AdminUserResponseModel> CreateUserAsync(CreateUserRequestModel request, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
@@ -70,13 +96,52 @@ public sealed class AdminManagementService : IAdminManagementService
         await _users.AddAsync(user, cancellationToken);
         await _users.SaveChangesAsync(cancellationToken);
 
-        return new AdminUserResponseModel
+        return MapUser(user, Array.Empty<string>());
+    }
+
+    public async Task<IReadOnlyList<AdminUserResponseModel>> ListUsersAsync(CancellationToken cancellationToken = default)
+    {
+        var users = await _users.GetAllOrderedByEmailAsync(cancellationToken);
+        var ids = users.Select(u => u.Id).ToList();
+        var rolesByUser = await _userRoles.GetRoleNamesByUserIdsAsync(ids, cancellationToken);
+
+        return users.Select(u =>
         {
-            Id = user.Id,
-            Email = user.Email,
-            UserName = user.UserName,
-            IsActive = user.IsActive,
-        };
+            rolesByUser.TryGetValue(u.Id, out var roles);
+            return MapUser(u, roles ?? Array.Empty<string>());
+        }).ToList();
+    }
+
+    public async Task<AdminUserResponseModel?> GetUserByIdAsync(int userId, CancellationToken cancellationToken = default)
+    {
+        var user = await _users.GetByIdAsync(userId, cancellationToken);
+        if (user is null)
+            return null;
+
+        var roles = await _userRoles.GetRoleNamesByUserIdAsync(userId, cancellationToken);
+        return MapUser(user, roles.ToList());
+    }
+
+    public async Task<AdminUserResponseModel> UpdateUserAsync(int userId, UpdateUserRequestModel request, CancellationToken cancellationToken = default)
+    {
+        var user = await _users.GetByIdAsync(userId, cancellationToken);
+        if (user is null)
+            throw new BusinessRuleException("User not found.");
+
+        if (request.UserName is not null)
+            user.UserName = string.IsNullOrWhiteSpace(request.UserName) ? null : request.UserName.Trim();
+
+        if (request.IsActive.HasValue)
+            user.IsActive = request.IsActive.Value;
+
+        if (!string.IsNullOrWhiteSpace(request.Password))
+            user.PasswordHash = _passwordHasher.HashPassword(request.Password);
+
+        _users.Update(user);
+        await _users.SaveChangesAsync(cancellationToken);
+
+        var roles = await _userRoles.GetRoleNamesByUserIdAsync(userId, cancellationToken);
+        return MapUser(user, roles.ToList());
     }
 
     public async Task AssignRoleAsync(int userId, string roleName, CancellationToken cancellationToken = default)
@@ -120,5 +185,20 @@ public sealed class AdminManagementService : IAdminManagementService
             throw new BusinessRuleException("Role not found.");
 
         return role;
+    }
+
+    private static AdminUserResponseModel MapUser(User user, IReadOnlyList<string> roles)
+    {
+        return new AdminUserResponseModel
+        {
+            Id = user.Id,
+            Email = user.Email,
+            UserName = user.UserName,
+            IsActive = user.IsActive,
+            EmailConfirmed = user.EmailConfirmed,
+            CreatedAtUtc = user.CreatedAtUtc,
+            LastLoginAtUtc = user.LastLoginAtUtc,
+            Roles = roles,
+        };
     }
 }

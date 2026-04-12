@@ -23,4 +23,12 @@ public sealed class UserRepository : BaseRepository<User>, IUserRepository
         return await Context.Set<User>()
             .FirstOrDefaultAsync(u => u.EmailConfirmationTokenHash == tokenHash, cancellationToken);
     }
+
+    public async Task<IReadOnlyList<User>> GetAllOrderedByEmailAsync(CancellationToken cancellationToken = default)
+    {
+        return await Context.Set<User>()
+            .AsNoTracking()
+            .OrderBy(u => u.NormalizedEmail)
+            .ToListAsync(cancellationToken);
+    }
 }

@@ -5,4 +5,6 @@ namespace Pukar.Usermanagement.Domain.Repositories.Interface;
 public interface IRoleRepository : IBaseRepository<Role>
 {
     Task<Role?> GetByNormalizedNameAsync(string normalizedRoleName, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<Role>> GetAllOrderedByNameAsync(CancellationToken cancellationToken = default);
 }
