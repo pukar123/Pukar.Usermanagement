@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("Shared helpers and exceptions for EMS and Pukar.Usermanagement.")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b659c92cf70d3c0b9ff2eb1c7fef0fa09cc23efe")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3376a0d09f2088faf7cca4ff171a2cd7223b794b")]
 [assembly: System.Reflection.AssemblyProductAttribute("Pukar.Usermanagement")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Pukar.Shared")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
