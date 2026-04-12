@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyDescriptionAttribute(("JWT authentication, refresh tokens, and user persistence (Domain / Application / " +
     "Infrastructure / API)."))]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3376a0d09f2088faf7cca4ff171a2cd7223b794b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d99f2c13f0dbe3b4062a108729ba796c2e935635")]
 [assembly: System.Reflection.AssemblyProductAttribute("Pukar.Usermanagement")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Pukar.Usermanagement.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -126,7 +126,7 @@ public sealed class AdminManagementService : IAdminManagementService
     {
         var user = await _users.GetByIdAsync(userId, cancellationToken);
         if (user is null)
-            throw new BusinessRuleException("User not found.");
+            throw new ResourceNotFoundException("User not found.");
 
         if (request.UserName is not null)
             user.UserName = string.IsNullOrWhiteSpace(request.UserName) ? null : request.UserName.Trim();

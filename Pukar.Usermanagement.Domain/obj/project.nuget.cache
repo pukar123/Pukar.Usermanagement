@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "SzME4tPA10U=",
+  "dgSpecHash": "q5sYrNyptm4=",
   "success": true,
-  "projectFilePath": "C:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj",
+  "projectFilePath": "c:\\MyProject\\Pukar.Usermanagement\\Pukar.Usermanagement.Domain\\Pukar.Usermanagement.Domain.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\pukar\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\pukar\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

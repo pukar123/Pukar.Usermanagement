@@ -81,6 +81,7 @@ public class AdminController : ControllerBase
     [HttpPut("users/{userId:int}")]
     [ProducesResponseType(typeof(AdminUserResponseModel), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<AdminUserResponseModel>> UpdateUser(
         int userId,
         [FromBody] UpdateUserRequestModel request,
@@ -90,6 +91,10 @@ public class AdminController : ControllerBase
         {
             var updated = await _adminManagement.UpdateUserAsync(userId, request, cancellationToken);
             return Ok(updated);
+        }
+        catch (ResourceNotFoundException)
+        {
+            return NotFound();
         }
         catch (BusinessRuleException ex)
         {
